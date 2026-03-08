@@ -13,11 +13,11 @@ const signUpSchema = z.object({
   firstname: z.string().min(1, "Tên bắt buộc phải có"),
   lastname: z.string().min(1, "Họ bắt buộc phải có"),
   username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
-  email: z.email("Email không hợp lệ"),
+  email: z.string().email("Email không hợp lệ"),
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
-type SignUpFormValues = z.infer<typeof signUpSchema>; //khai báo kiểu cho form
+type SignUpFormValues = z.infer<typeof signUpSchema>;
 
 export function SignupForm({
   className,
@@ -35,134 +35,160 @@ export function SignupForm({
 
   const onSubmit = async (data: SignUpFormValues) => {
     const { firstname, lastname, username, email, password } = data;
-    // gọi backend để signup
     await signUp(username, password, email, firstname, lastname);
     navigate("/signin");
   };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0 border-border">
+      <Card className="overflow-hidden p-0 border-border shadow-lg hover:shadow-xl transition-shadow duration-300">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               {/* header - logo */}
               <div className="flex flex-col items-center text-center gap-2">
-                <a href="/" className="mx-auto block w-fit text-center">
-                  <img src="/logo.svg" alt="logo" />
+                <a href="/" className="mx-auto flex items-center gap-2 w-fit group">
+                  <img
+                    src="/Group 1 (2).png"
+                    alt="logo"
+                    className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <span className="text-xl font-bold text-[#F97316]">Chatify</span>
                 </a>
-                <h1 className="text-2xl front-bolb">Tạo tài khoản Moji</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Tạo tài khoản</h1>
                 <p className="text-muted-foreground text-balance">
                   Chào mừng bạn! Hãy đăng ký để bắt đầu
                 </p>
               </div>
+              
               {/* họ và tên */}
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-2">
-                  <Label htmlFor="lastname" className="block text-sm">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
                     Họ
                   </Label>
-                  <Input type="text" id="lastname" {...register("lastname")} />
-                  {/* error message */}
+                  <Input 
+                    type="text" 
+                    id="lastname" 
+                    placeholder="Nguyễn"
+                    className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
+                    {...register("lastname")} 
+                  />
                   {errors.lastname && (
-                    <p className="text-destructive text-sm">
-                      {errors.lastname.message}
-                    </p>
+                    <p className="text-sm text-red-500 mt-1">{errors.lastname.message}</p>
                   )}
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="firstname" className="block text-sm">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
                     Tên
                   </Label>
                   <Input
                     type="text"
                     id="firstname"
+                    placeholder="Văn A"
+                    className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                     {...register("firstname")}
                   />
-                  {/* error message */}
                   {errors.firstname && (
-                    <p className="text-destructive text-sm">
-                      {errors.firstname.message}
-                    </p>
+                    <p className="text-sm text-red-500 mt-1">{errors.firstname.message}</p>
                   )}
                 </div>
               </div>
+              
               {/* username */}
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="username" className="block text-sm">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="username" className="block text-sm font-medium text-gray-700">
                   Tên đăng nhập
                 </Label>
                 <Input
                   type="text"
                   id="username"
-                  placeholder="moji"
+                  placeholder="chatify"
+                  className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                   {...register("username")}
                 />
-                {/* error message */}
                 {errors.username && (
-                  <p className="text-destructive text-sm">
-                    {errors.username.message}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{errors.username.message}</p>
                 )}
               </div>
+              
               {/* email */}
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="email" className="block text-sm">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email
                 </Label>
                 <Input
                   type="email"
                   id="email"
-                  placeholder="moji@gmail.com"
+                  placeholder="chatify@gmail.com"
+                  className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                   {...register("email")}
                 />
-                {/* error message */}
                 {errors.email && (
-                  <p className="text-destructive text-sm">
-                    {errors.email.message}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
                 )}
               </div>
+              
               {/* password */}
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="password" className="block text-sm">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Mật khẩu
                 </Label>
                 <Input
                   type="password"
                   id="password"
+                  placeholder="••••••"
+                  className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                   {...register("password")}
                 />
-                {/* error message */}
                 {errors.password && (
-                  <p className="text-destructive text-sm">
-                    {errors.password.message}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
                 )}
               </div>
+              
               {/* nút đăng ký */}
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Tạo tài khoản
+              <Button 
+                type="submit" 
+                className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
               </Button>
+              
               <div className="text-center text-sm">
                 Đã có tài khoản?{" "}
-                <a href="/signin" className="underline underline-offset-4">
+                <a href="/signin" className="text-[#F97316] hover:text-[#FB923C] font-medium underline underline-offset-4 transition-colors">
                   Đăng nhập
                 </a>
               </div>
             </div>
           </form>
-          <div className="bg-muted relative hidden md:block">
+          
+          <div className="bg-gradient-to-br from-[#F97316] to-[#FB923C] relative hidden md:block overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
             <img
               src="/placeholderSignUp.png"
               alt="Image"
-              className="absolute top-1/2 -translate-y-1/2 object-cover"
+              className="absolute top-1/2 -translate-y-1/2 object-cover opacity-90 hover:opacity-100 transition-opacity duration-300"
             />
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center bg-gradient-to-t from-black/50 to-transparent">
+              <p className="text-lg font-semibold">Tham gia cộng đồng Chatify</p>
+              <p className="text-sm opacity-90">Kết nối với hàng triệu người dùng</p>
+            </div>
           </div>
         </CardContent>
       </Card>
-      <div className="text-xs text-balance px-6 text-center *:[a]:hover:text-primary text-muted-foreground *:[a]:underline *:[a]:underline-offset-4">
-        Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và{" "}
-        <a href="#">Chính sách bảo mật</a> của chúng tôi.
+      
+      <div className="text-xs text-balance px-6 text-center text-gray-500">
+        Bằng cách tiếp tục, bạn đồng ý với{" "}
+        <a href="#" className="text-[#F97316] hover:text-[#FB923C] underline underline-offset-4 transition-colors">
+          Điều khoản dịch vụ
+        </a>{" "}
+        và{" "}
+        <a href="#" className="text-[#F97316] hover:text-[#FB923C] underline underline-offset-4 transition-colors">
+          Chính sách bảo mật
+        </a>{" "}
+        của chúng tôi.
       </div>
     </div>
   );

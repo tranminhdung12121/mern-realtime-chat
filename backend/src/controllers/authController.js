@@ -67,7 +67,7 @@ export const signIn = async (req, res) => {
     if (!passwordCorrect) {
       return res
         .status(401)
-        .json({ message: "username hoặc password không chính xác" }); // ghi giống trên để ngkhasc ko đoán đc username hay password sai
+        .json({ message: "username hoặc password không chính xác" }); // ghi giống trên để hacker ko đoán đc username hay password sai
     }
 
     // nếu khớp, tạo accessToken với JWT

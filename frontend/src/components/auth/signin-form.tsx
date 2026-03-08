@@ -11,105 +11,129 @@ import { useNavigate } from "react-router";
 
 const signInSchema = z.object({
   username: z.string().min(3, "Tên đăng nhập phải có ít nhất 3 ký tự"),
-  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+  password: z.string().min(2, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
-type SignInFormValues = z.infer<typeof signInSchema>; //khai báo kiểu cho form
+type SignInFormValues = z.infer<typeof signInSchema>;
 
 export function SigninForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const {signIn} = useAuthStore();
-  const navigate=useNavigate();
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-      } = useForm<SignInFormValues>({
-        resolver: zodResolver(signInSchema),
-      });
-    
-      const onSubmit = async (data: SignInFormValues) => {
-        const {username, password} = data;
-        await signIn(username, password);
-        navigate("/");
-      };
-      return (
+  const { signIn } = useAuthStore();
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
+  });
+
+  const onSubmit = async (data: SignInFormValues) => {
+    const { username, password } = data;
+    await signIn(username, password);
+    navigate("/");
+  };
+
+  return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card className="overflow-hidden p-0 border-border">
+      <Card className="overflow-hidden p-0 border-border shadow-lg hover:shadow-xl transition-shadow duration-300">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col gap-6">
               {/* header - logo */}
               <div className="flex flex-col items-center text-center gap-2">
-                <a href="/" className="mx-auto block w-fit text-center">
-                  <img src="/logo.svg" alt="logo" />
+                <a href="/" className="mx-auto flex items-center gap-2 w-fit group">
+                  <img
+                    src="/Group 1 (2).png"
+                    alt="logo"
+                    className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <span className="text-xl font-bold text-[#F97316]">Chatify</span>
                 </a>
-                <h1 className="text-2xl front-bolb">Chào mừng quay lại</h1>
+                <h1 className="text-2xl font-bold text-gray-800">Chào mừng quay lại</h1>
                 <p className="text-muted-foreground text-balance">
-                  Đăng nhập vào tài khoản Moji của bạn
+                  Đăng nhập vào tài khoản của bạn
                 </p>
               </div>
+              
               {/* username */}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="username" className="block text-sm">
+                <Label htmlFor="username" className="block text-sm font-medium text-gray-700">
                   Tên đăng nhập
                 </Label>
                 <Input
                   type="text"
                   id="username"
-                  placeholder="moji"
+                  placeholder="chatify"
+                  className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                   {...register("username")}
                 />
-                {/* error message */}
                 {errors.username && (
-                  <p className="text-destructive text-sm">
-                    {errors.username.message}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{errors.username.message}</p>
                 )}
               </div>
+              
               {/* password */}
               <div className="flex flex-col gap-3">
-                <Label htmlFor="password" className="block text-sm">
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
                   Mật khẩu
                 </Label>
                 <Input
                   type="password"
                   id="password"
+                  className="border-gray-300 focus:border-[#F97316] focus:ring-[#F97316] focus:ring-1 focus:outline-none transition-colors"
                   {...register("password")}
                 />
-                {/* error message */}
                 {errors.password && (
-                  <p className="text-destructive text-sm">
-                    {errors.password.message}
-                  </p>
+                  <p className="text-sm text-red-500 mt-1">{errors.password.message}</p>
                 )}
               </div>
+              
               {/* nút đăng nhập */}
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                Đăng nhập
+              <Button 
+                type="submit" 
+                className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100" 
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
               </Button>
+              
               <div className="text-center text-sm">
                 Chưa có tài khoản?{" "}
-                <a href="/signup" className="underline underline-offset-4">
+                <a href="/signup" className="text-[#F97316] hover:text-[#FB923C] font-medium underline underline-offset-4 transition-colors">
                   Đăng ký
                 </a>
               </div>
             </div>
           </form>
-          <div className="bg-muted relative hidden md:block">
+          
+          <div className="bg-gradient-to-br from-[#F97316] to-[#FB923C] relative hidden md:block overflow-hidden">
+            <div className="absolute inset-0 bg-black/10"></div>
             <img
               src="/placeholder.png"
               alt="Image"
-              className="absolute top-1/2 -translate-y-1/2 object-cover"
+              className="absolute top-1/2 -translate-y-1/2 object-cover opacity-90 hover:opacity-100 transition-opacity duration-300"
             />
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-white text-center bg-gradient-to-t from-black/50 to-transparent">
+              <p className="text-lg font-semibold">Kết nối với bạn bè</p>
+              <p className="text-sm opacity-90">Trò chuyện mọi lúc, mọi nơi</p>
+            </div>
           </div>
         </CardContent>
       </Card>
-      <div className="text-xs text-balance px-6 text-center *:[a]:hover:text-primary text-muted-foreground *:[a]:underline *:[a]:underline-offset-4">
-        Bằng cách tiếp tục, bạn đồng ý với <a href="#">Điều khoản dịch vụ</a> và{" "}
-        <a href="#">Chính sách bảo mật</a> của chúng tôi.
+      
+      <div className="text-xs text-balance px-6 text-center text-gray-500">
+        Bằng cách tiếp tục, bạn đồng ý với{" "}
+        <a href="#" className="text-[#F97316] hover:text-[#FB923C] underline underline-offset-4 transition-colors">
+          Điều khoản dịch vụ
+        </a>{" "}
+        và{" "}
+        <a href="#" className="text-[#F97316] hover:text-[#FB923C] underline underline-offset-4 transition-colors">
+          Chính sách bảo mật
+        </a>{" "}
+        của chúng tôi.
       </div>
     </div>
   );

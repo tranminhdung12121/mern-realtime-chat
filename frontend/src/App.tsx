@@ -8,6 +8,10 @@ import { useThemeStore } from "./stores/useThemeStore";
 import { useEffect } from "react";
 import { useAuthStore } from "./stores/useAuthStore";
 import { useSocketStore } from "./stores/useSocketStore";
+import TermsOfServicePage from "./pages/TermsOfServicePage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import VerifyOtpPage from "./pages/VerifyOtpPage";
+
 function App() {
     const { isDark, setTheme } = useThemeStore();
   const { accessToken } = useAuthStore();
@@ -34,6 +38,9 @@ function App() {
           {/* public routes*/}
           <Route path="/signin" element={<SignInPage />} />
           <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/terms" element={<TermsOfServicePage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/verify-otp" element={<VerifyOtpPage />} />
           {/* protected routes*/}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ChatAppPage />} />

@@ -60,7 +60,7 @@ export function NavUser({ user }: { user: User }) {
                     {user.displayName}
                   </span>
                   <span className="truncate text-xs text-muted-foreground">
-                    @{user.username}
+                    {user.email}
                   </span>
                 </div>
 
@@ -88,7 +88,7 @@ export function NavUser({ user }: { user: User }) {
                   <div className="flex flex-col">
                     <span className="font-semibold">{user.displayName}</span>
                     <span className="text-xs text-muted-foreground">
-                      @{user.username}
+                      {user.email}
                     </span>
                   </div>
                 </div>

@@ -1,8 +1,8 @@
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useChatStore } from "@/stores/useChatStore";
 import type { Conversation } from "@/types/chat";
-import ChatCard from "./ChatCard";
-import UnreadCountBadge from "./UnreadCountBadge";
+import ChatCard from "../ChatCard";
+import UnreadCountBadge from "../UnreadCountBadge";
 import GroupChatAvatar from "./GroupChatAvatar";
 
 const GroupChatCard = ({ convo }: { convo: Conversation }) => {

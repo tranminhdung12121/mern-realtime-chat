@@ -2,16 +2,14 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
-    username: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-      lowercase: true,
-    },
     hashedPassword: {
       type: String,
-      required: true,
+      required: false,
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
     },
     email: {
       type: String,
@@ -37,12 +35,14 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
+      // required: true,
+      unique: true,
       sparse: true, // cho phép null, nhưng không được trùng
     },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const User = mongoose.model("User", userSchema);

@@ -7,15 +7,15 @@ export const useFriendStore = create<FriendState>((set, get) => ({
   loading: false,
   receivedList: [],
   sentList: [],
-  searchByUsername: async (username) => {
+  searchUserByPhone: async (phone) => {
     try {
       set({ loading: true });
 
-      const user = await friendService.searchByUsername(username);
+      const user = await friendService.searchUserByPhone(phone);
 
       return user;
     } catch (error) {
-      console.error("Lỗi xảy ra khi tìm user bằng username", error);
+      console.error("Lỗi xảy ra khi tìm bạn bè bằng số điện thoại", error);
       return null;
     } finally {
       set({ loading: false });
@@ -42,7 +42,6 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       set({ loading: true });
 
       const result = await friendService.getAllFriendRequest();
-
       if (!result) return;
 
       const { received, sent } = result;

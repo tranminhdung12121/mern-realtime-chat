@@ -25,15 +25,25 @@ export const chatService = {
   async sendDirectMessage(
     recipientId: string,
     content: string = "",
-    imgUrl?: string,
+    files?: File[],
     conversationId?: string,
   ) {
-    const res = await api.post("/messages/direct", {
-      recipientId,
-      content,
-      imgUrl,
-      conversationId,
-    });
+    const formData = new FormData();
+
+    formData.append("recipientId", recipientId);
+    formData.append("content", content);
+
+    if (conversationId) {
+      formData.append("conversationId", conversationId);
+    }
+
+    if (files) {
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    const res = await api.post("/messages/direct", formData);
 
     return res.data.message;
   },
@@ -41,13 +51,21 @@ export const chatService = {
   async sendGroupMessage(
     conversationId: string,
     content: string = "",
-    imgUrl?: string,
+    files?: File[],
   ) {
-    const res = await api.post("/messages/group", {
-      conversationId,
-      content,
-      imgUrl,
-    });
+    const formData = new FormData();
+
+    formData.append("conversationId", conversationId);
+    formData.append("content", content);
+
+    if (files) {
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+    }
+
+    const res = await api.post("/messages/group", formData);
+
     return res.data.message;
   },
 
@@ -63,5 +81,9 @@ export const chatService = {
   ) {
     const res = await api.post("/conversations", { type, name, memberIds });
     return res.data.conversation;
+  },
+  async deleteMessage(_id: string) {
+    const res = await api.delete(`/messages/${_id}`);
+    return res.data;
   },
 };

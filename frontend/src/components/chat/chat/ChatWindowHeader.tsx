@@ -1,11 +1,11 @@
 import { useChatStore } from "@/stores/useChatStore";
 import type { Conversation } from "@/types/chat";
-import { SidebarTrigger } from "../ui/sidebar";
+import { SidebarTrigger } from "../../ui/sidebar";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { Separator } from "../ui/separator";
-import UserAvatar from "./UserAvatar";
-import StatusBadge from "./StatusBadge";
-import GroupChatAvatar from "./GroupChatAvatar";
+import { Separator } from "../../ui/separator";
+import UserAvatar from "../UserAvatar";
+import StatusBadge from "../StatusBadge";
+import GroupChatAvatar from "../sidebarGroup/GroupChatAvatar";
 import { useSocketStore } from "@/stores/useSocketStore";
 
 const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
@@ -54,7 +54,9 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
                 {/* todo: socket io */}
                 <StatusBadge
                   status={
-                    onlineUsers.includes(otherUser?._id ?? "") ? "online" : "offline"
+                    onlineUsers.includes(otherUser?._id ?? "")
+                      ? "online"
+                      : "offline"
                   }
                 />
               </>

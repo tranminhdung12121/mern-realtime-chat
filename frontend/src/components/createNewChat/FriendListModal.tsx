@@ -51,7 +51,7 @@ const FriendListModal = () => {
                     {friend.displayName}
                   </h2>
                   <span className="text-sm text-muted-foreground">
-                    @{friend.username}
+                    {friend.email}
                   </span>
                 </div>
               </div>

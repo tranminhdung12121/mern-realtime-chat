@@ -19,7 +19,7 @@ export const useAuthStore = create<AuthState>()(
       setUser: (user) => {
         set({ user });
       },
-      
+
       clearState: () => {
         set({ accessToken: null, user: null, loading: false });
         useChatStore.getState().reset();
@@ -27,20 +27,12 @@ export const useAuthStore = create<AuthState>()(
         sessionStorage.clear();
       },
 
-      signUp: async (username, password, email, firstName, lastName) => {
+      signUp: async (password, email, phone, firstName, lastName) => {
         try {
           set({ loading: true });
           //api
-          await authService.signUp(
-            username,
-            password,
-            email,
-            firstName,
-            lastName,
-          );
-          toast.success(
-            "Đăng ký thành công! bạn sẽ được sang trang đăng nhập.",
-          );
+          await authService.signUp(password, email, phone, firstName, lastName);
+          toast.success("Vui lòng xác thực OTP của bạn để hoàn tất đăng ký!");
         } catch (error) {
           console.error(error);
           toast.error("Đăng ký không thành công");
@@ -48,14 +40,42 @@ export const useAuthStore = create<AuthState>()(
           set({ loading: false });
         }
       },
-      signIn: async (username, password) => {
+
+      verifySignupOtp: async (email, otp) => {
+        try {
+          set({ loading: true });
+
+          await authService.verifySignupOtp(email, otp);
+
+          toast.success("Xác thực OTP thành công! Hãy đăng nhập");
+        } catch (error) {
+          console.error(error);
+          toast.error("OTP không hợp lệ");
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      resendOtp: async (email) => {
+        try {
+          await authService.resendOtp(email);
+
+          toast.success("OTP mới đã được gửi");
+        } catch (error) {
+          console.error(error);
+
+          toast.error("Không thể gửi lại OTP");
+        }
+      },
+
+      signIn: async (email, password) => {
         try {
           get().clearState();
           set({ loading: true });
 
           useChatStore.getState().reset();
 
-          const { accessToken } = await authService.signIn(username, password);
+          const { accessToken } = await authService.signIn(email, password);
           get().setAccessToken(accessToken);
 
           await get().fetchMe();
@@ -69,6 +89,28 @@ export const useAuthStore = create<AuthState>()(
           set({ loading: false });
         }
       },
+      googleLogin: async (credential: string) => {
+        try {
+          get().clearState();
+          set({ loading: true });
+
+          const { accessToken } = await authService.googleLogin(credential);
+
+          get().setAccessToken(accessToken);
+
+          await get().fetchMe();
+
+          useChatStore.getState().fetchConversations();
+
+          toast.success("Đăng nhập Google thành công 🎉");
+        } catch (error) {
+          console.error(error);
+          toast.error("Google login thất bại!");
+        } finally {
+          set({ loading: false });
+        }
+      },
+
       signOut: async () => {
         try {
           get().clearState();

@@ -43,13 +43,18 @@ export interface Conversation {
 export interface ConversationResponse {
   conversations: Conversation[];
 }
-
+export interface Attachment {
+  url: string
+  type: "image" | "video" | "file"
+  filename?: string
+  size?: number
+}
 export interface Message {
   _id: string;
   conversationId: string;
   senderId: string;
   content: string | null;
-  imgUrl?: string | null;
+  attachments?: Attachment[] | null;
   updatedAt?: string | null;
   createdAt: string;
   isOwn?: boolean;

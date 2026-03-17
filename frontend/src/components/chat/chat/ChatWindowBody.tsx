@@ -2,9 +2,8 @@ import { useChatStore } from "@/stores/useChatStore";
 import ChatWelcomeScreen from "./ChatWelcomeScreen";
 import MessageItem from "./MessageItem";
 import { useLayoutEffect, useRef } from "react";
-// import MessageItem from "./MessageItem";
-// import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const ChatWindowBody = () => {
   const {
@@ -13,9 +12,7 @@ const ChatWindowBody = () => {
     messages: allMessages,
     fetchMessages,
   } = useChatStore();
-  // const [lastMessageStatus, setLastMessageStatus] = useState<"delivered" | "seen">(
-  //   "delivered"
-  // );
+  const {user} = useAuthStore();
 
   const messages = allMessages[activeConversationId!]?.items ?? [];
   const reversedMessages = [...messages].reverse();
@@ -23,25 +20,24 @@ const ChatWindowBody = () => {
   const selectedConvo = conversations.find(
     (c) => c._id === activeConversationId,
   );
-  const lastMessageStatus: "delivered" | "seen" =
-    (selectedConvo?.seenBy?.length ?? 0) > 0 ? "seen" : "delivered";
-  const key = `chat-scroll-${activeConversationId}`;
+  // trạng thái tin nhắn
+  const currentUserId = user?._id;
 
+  const seenBy = selectedConvo?.seenBy ?? [];
+  const lastSenderId = selectedConvo?.lastMessage?.sender?._id;
+
+  const isSeen =
+    !!currentUserId &&
+    lastSenderId === currentUserId &&
+    seenBy.some((u) => u._id !== currentUserId);
+
+  const lastMessageStatus: "đã gửi" | "đã xem" = isSeen ? "đã xem" : "đã gửi";
+
+
+  const key = `chat-scroll-${activeConversationId}`;
   // ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // seen status
-  // useEffect(() => {
-  //   const lastMessage = selectedConvo?.lastMessage;
-  //   if (!lastMessage) {
-  //     return;
-  //   }
-
-  //   const seenBy = selectedConvo?.seenBy ?? [];
-
-  //   setLastMessageStatus(seenBy.length > 0 ? "seen" : "delivered");
-  // }, [selectedConvo]);
 
   // kéo xuống dưới khi load convo
   useLayoutEffect(() => {

@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io-client";
-import type { Conversation, Message } from "./chat";
+import type { Conversation, LastMessage, Message } from "./chat";
 import type { Friend, FriendRequest, User } from "./user";
 
 export interface AuthState {
@@ -10,13 +10,16 @@ export interface AuthState {
   setUser: (user: User) => void;
   clearState: () => void;
   signUp: (
-    username: string,
     password: string,
     email: string,
+    phone: string,
     firstName: string,
     lastName: string,
   ) => Promise<void>;
-  signIn: (username: string, password: string) => Promise<void>;
+  verifySignupOtp: (email: string, otp: string) => Promise<void>;
+  resendOtp: (email: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
   signOut: () => Promise<void>;
   fetchMe: () => Promise<void>;
   refresh: () => Promise<void>;
@@ -50,12 +53,12 @@ export interface ChatState {
   sendDirectMessage: (
     recipientId: string,
     content: string,
-    imgUrl?: string,
+    files?: File[],
   ) => Promise<void>;
   sendGroupMessage: (
     conversationId: string,
     content: string,
-    imgUrl?: string,
+    files?: File[],
   ) => Promise<void>;
   // add message
   addMessage: (message: Message) => Promise<void>;
@@ -66,8 +69,14 @@ export interface ChatState {
   createConversation: (
     type: "group" | "direct",
     name: string,
-    memberIds: string[]
+    memberIds: string[],
   ) => Promise<void>;
+  deleteMessage: (_id: string, conversationId: string) => Promise<void>;
+  deleteMessageRealtime: (
+    _id: string,
+    conversationId: string,
+    lastMessage: LastMessage | null,
+  ) => void;
 }
 
 export interface SocketState {
@@ -82,7 +91,7 @@ export interface FriendState {
   loading: boolean;
   receivedList: FriendRequest[];
   sentList: FriendRequest[];
-  searchByUsername: (username: string) => Promise<User | null>;
+  searchUserByPhone: (phone: string) => Promise<User | null>;
   addFriend: (to: string, message?: string) => Promise<string>;
   getAllFriendRequests: () => Promise<void>;
   acceptRequest: (requestId: string) => Promise<void>;
@@ -92,4 +101,9 @@ export interface FriendState {
 
 export interface UserState {
   updateAvatarUrl: (formData: FormData) => Promise<void>;
+  updateInforMe: (
+    displayName: string,
+    phone: string,
+    bio: string,
+  ) => Promise<void>;
 }

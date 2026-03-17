@@ -12,4 +12,8 @@ export const userService = {
 
     return res.data;
   },
+  updateInforMe: async (displayName: string, phone: string, bio: string) => {
+    const res = await api.patch("/users/updateInforMe", { displayName, phone, bio });
+    return res.data;
+  }
 };

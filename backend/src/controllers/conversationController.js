@@ -214,39 +214,40 @@ export const markAsSeen = async (req, res) => {
       {
         new: true, //trả về document sau khi update
       },
-    );
-    const mapConversationForClient = (conversation) => {
-      return {
-        ...(conversation.toObject?.() ?? conversation),
+    )
+      .populate("seenBy", "displayName avatarUrl")
+      .populate("lastMessage.senderId", "displayName avatarUrl");
+    // const mapConversationForClient = (conversation) => {
+    //   return {
+    //     ...(conversation.toObject?.() ?? conversation),
 
-        // convert seenBy ObjectId -> object
-        seenBy: (conversation.seenBy || []).map((id) => ({
-          _id: id.toString(),
-        })),
+    //     // convert seenBy ObjectId -> object
+    //     seenBy: (conversation.seenBy || []).map((id) => ({
+    //       _id: id.toString(),
+    //     })),
 
-        // convert lastMessage
-        lastMessage: conversation.lastMessage
-          ? {
-              _id: conversation.lastMessage._id,
-              content: conversation.lastMessage.content,
-              createdAt: conversation.lastMessage.createdAt,
-              sender: {
-                _id: conversation.lastMessage.senderId.toString(),
-              },
-            }
-          : null,
-      };
-    };
+    //     // convert lastMessage
+    //     lastMessage: conversation.lastMessage
+    //       ? {
+    //           _id: conversation.lastMessage._id,
+    //           content: conversation.lastMessage.content,
+    //           createdAt: conversation.lastMessage.createdAt,
+    //           sender: {
+    //             _id: conversation.lastMessage.senderId.toString(),
+    //           },
+    //         }
+    //       : null,
+    //   };
+    // };
 
-    const safeConversation = mapConversationForClient(updated);
+    // const safeConversation = mapConversationForClient(updated);
 
     io.to(conversationId).emit("read-message", {
-      conversation: safeConversation,
-      lastMessage: safeConversation.lastMessage,
+      conversation: updated,
     });
     return res.status(200).json({
       message: "Marked as seen",
-      seenBy: updated?.sennBy || [],
+      seenBy: updated?.seenBy || [],
       myUnreadCount: updated?.unreadCounts[userId] || 0,
     });
   } catch (error) {

@@ -13,7 +13,6 @@ const ReceivedRequests = () => {
       </p>
     );
   }
-
   const handleAccept = async (requestId: string) => {
     try {
       await acceptRequest(requestId);

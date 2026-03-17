@@ -4,7 +4,6 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
@@ -15,10 +14,10 @@ import {
 import { Moon, Sun } from "lucide-react";
 import { Switch } from "../ui/switch";
 import CreateNewChat from "../chat/CreateNewChat";
-import NewGroupChatModal from "../chat/NewGroupChatModal";
-import GroupChatList from "../chat/GroupChatList";
-import AddFriendModal from "../chat/AddFriendModal";
-import DirectMessageList from "../chat/DirectMessageList";
+import NewGroupChatModal from "../chat/sidebarGroup/NewGroupChatModal";
+import GroupChatList from "../chat/sidebarGroup/GroupChatList";
+import AddFriendModal from "../chat/sidebarDirect/AddFriendModal";
+import DirectMessageList from "../chat/sidebarDirect/DirectMessageList";
 import { useThemeStore } from "@/stores/useThemeStore";
 import { NavUser } from "@/components/sidebar/nav-user";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -84,11 +83,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
         {/* Dirrect Message */}
         <SidebarGroup>
-          <SidebarGroupLabel className="uppercase">bạn bè</SidebarGroupLabel>
-          <SidebarGroupAction title="Kết bạn" className="cursor-pointer">
+          <div className="flex items-center justify-between">
+            <SidebarGroupLabel className="uppercase">bạn bè</SidebarGroupLabel>
             <AddFriendModal />
-          </SidebarGroupAction>
-
+          </div>
           <SidebarGroupContent>
             {convoLoading ? <ConversationSkeleton /> : <DirectMessageList />}
           </SidebarGroupContent>

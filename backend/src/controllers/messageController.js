@@ -4,18 +4,21 @@ import {
   emitNewMessage,
   updateConversationAfterCreateMessage,
 } from "../utils/messageHelper.js";
-import {io} from "../socket/index.js"
+
+import { io } from "../socket/index.js";
+import { uploadFileFromBuffer } from "../middlewares/uploadMiddleware.js";
 
 export const sendDirectMessage = async (req, res) => {
-try {
+  try {
     const { recipientId, content, conversationId } = req.body;
     const senderId = req.user._id;
+    const files = req.files || [];
+
+    if (!content && files.length === 0) {
+      return res.status(400).json({ message: "Tin nhắn rỗng" });
+    }
 
     let conversation;
-
-    if (!content) {
-      return res.status(400).json({ message: "Thiếu nội dung" });
-    }
 
     if (conversationId) {
       conversation = await Conversation.findById(conversationId);
@@ -33,10 +36,29 @@ try {
       });
     }
 
+    const attachments = [];
+
+    for (const file of files) {
+      const result = await uploadFileFromBuffer(file.buffer);
+
+      let type = "file";
+
+      if (file.mimetype.startsWith("image")) type = "image";
+      if (file.mimetype.startsWith("video")) type = "video";
+
+      attachments.push({
+        url: result.secure_url,
+        type,
+        filename: file.originalname,
+        size: file.size,
+      });
+    }
+
     const message = await Message.create({
       conversationId: conversation._id,
       senderId,
       content,
+      attachments,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
@@ -47,7 +69,7 @@ try {
 
     return res.status(201).json({ message });
   } catch (error) {
-    console.error("Lỗi xảy ra khi gửi tin nhắn trực tiếp", error);
+    console.error("sendDirectMessage error:", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
@@ -57,15 +79,35 @@ export const sendGroupMessage = async (req, res) => {
     const { conversationId, content } = req.body;
     const senderId = req.user._id;
     const conversation = req.conversation;
+    const files = req.files || [];
 
-    if (!content) {
-      return res.status(400).json("Thiếu nội dung");
+    if (!content && files.length === 0) {
+      return res.status(400).json({ message: "Tin nhắn rỗng" });
+    }
+
+    const attachments = [];
+
+    for (const file of files) {
+      const result = await uploadFileFromBuffer(file.buffer);
+
+      let type = "file";
+
+      if (file.mimetype.startsWith("image")) type = "image";
+      if (file.mimetype.startsWith("video")) type = "video";
+
+      attachments.push({
+        url: result.secure_url,
+        type,
+        filename: file.originalname,
+        size: file.size,
+      });
     }
 
     const message = await Message.create({
       conversationId,
       senderId,
       content,
+      attachments,
     });
 
     updateConversationAfterCreateMessage(conversation, message, senderId);
@@ -76,7 +118,81 @@ export const sendGroupMessage = async (req, res) => {
 
     return res.status(201).json({ message });
   } catch (error) {
-    console.error("Lỗi xảy ra khi gửi tin nhắn nhóm", error);
+    console.error("sendGroupMessage error:", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
   }
 };
+
+export const deleteMessage = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const userId = req.user._id;
+
+    const message = await Message.findById(_id);
+
+    if (!message) {
+      return res.status(404).json({
+        message: "Tin nhắn không tồn tại",
+      });
+    }
+
+    // chỉ cho phép người gửi xóa
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({
+        message: "Bạn không có quyền xóa tin nhắn này",
+      });
+    }
+
+    const conversationId = message.conversationId;
+
+    await Message.findByIdAndDelete(_id);
+
+    // tìm last message mới
+    const lastMessage = await Message.findOne({ conversationId })
+      .sort({ createdAt: -1 });
+
+    if (lastMessage) {
+      await Conversation.updateOne(
+        { _id: conversationId },
+        {
+          lastMessage: {
+            _id: lastMessage._id,
+            content: lastMessage.content,
+            senderId: lastMessage.senderId,
+            createdAt: lastMessage.createdAt,
+          },
+          lastMessageAt: lastMessage.createdAt,
+        }
+      );
+    } else {
+      await Conversation.updateOne(
+        { _id: conversationId },
+        {
+          lastMessage: null,
+          lastMessageAt: null,
+        }
+      );
+    }
+
+    // realtime
+    io.to(conversationId.toString()).emit("messageDeleted", {
+      _id,
+      conversationId,
+      lastMessage,
+    });
+
+    return res.status(200).json({
+      messageId: _id,
+      conversationId,
+      lastMessage,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Lỗi khi xóa tin nhắn",
+    });
+  }
+};
+
+

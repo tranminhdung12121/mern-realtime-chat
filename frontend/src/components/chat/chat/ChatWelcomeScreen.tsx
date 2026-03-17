@@ -1,4 +1,4 @@
-import { SidebarInset } from "../ui/sidebar";
+import { SidebarInset } from "../../ui/sidebar";
 import ChatWindowHeader from "./ChatWindowHeader";
 
 const ChatWelcomeScreen = () => {
@@ -8,15 +8,21 @@ const ChatWelcomeScreen = () => {
 
       <div className="flex flex-1 items-center justify-center">
         <div className="text-center max-w-md px-6 py-10 rounded-3xl bg-white dark:bg-zinc-900 shadow-lg border border-[#f55718]/20">
+          {/* Logo */}
+          <div className="relative mx-auto mb-6 w-fit pulse-ring">
+            {/* Glow animation */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#f55718] to-[#ff7a45] rounded-full blur-2xl opacity-40 animate-pulse"></div>
 
-          {/* Icon */}
-          <div className="size-24 mx-auto mb-6 rounded-full flex items-center justify-center 
-          bg-gradient-to-br from-[#f55718] to-[#ff7a45] shadow-md">
-            <span className="text-4xl">💬</span>
+            {/* Logo */}
+            <img
+              src="/Group 1 (3).png"
+              alt="Chatify Logo"
+              className="relative size-24 object-contain drop-shadow-xl"
+            />
           </div>
 
           {/* Title */}
-          <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-[#f55718] to-[#ff7a45] bg-clip-text text-transparent">
+          <h2 className="text-3xl font-bold mb-1 leading-normal bg-gradient-to-r from-[#f55718] to-[#ff7a45] bg-clip-text text-transparent">
             Chào mừng đến với Chatify
           </h2>
 
@@ -24,7 +30,6 @@ const ChatWelcomeScreen = () => {
           <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
             Chọn một cuộc hội thoại để bắt đầu trò chuyện với bạn bè của bạn.
           </p>
-
         </div>
       </div>
     </SidebarInset>

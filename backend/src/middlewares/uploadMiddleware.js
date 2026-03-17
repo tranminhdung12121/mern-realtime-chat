@@ -4,25 +4,20 @@ import { v2 as cloudinary } from "cloudinary";
 export const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 1024 * 1024 * 1, // 1MB
+    fileSize: 1024 * 1024 * 20, // 20MB
   },
 });
 
-export const uploadImageFromBuffer = (buffer, options) => {
+export const uploadFileFromBuffer = (buffer, resourceType = "auto") => {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
-        folder: "realtime_chat/avatars",
-        resource_type: "image",
-        transformation: [{ width: 200, height: 200, crop: "fill" }],
-        ...options,
+        folder: "realtime_chat/messages",
+        resource_type: resourceType,
       },
       (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result);
-        }
+        if (error) reject(error);
+        else resolve(result);
       }
     );
 

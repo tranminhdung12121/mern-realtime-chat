@@ -1,5 +1,5 @@
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
-import type { IFormValues } from "../chat/AddFriendModal";
+import type { IFormValues } from "../chat/sidebarDirect/AddFriendModal";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { DialogFooter } from "../ui/dialog";
@@ -11,9 +11,9 @@ interface SearchFormProps {
   register: UseFormRegister<IFormValues>;
   errors: FieldErrors<IFormValues>;
   loading: boolean;
-  usernameValue: string;
+  phoneValue: string;
   isFound: boolean | null;
-  searchedUsername: string;
+  searchedPhone: string;
   onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
   onCancel: () => void;
 }
@@ -21,42 +21,36 @@ interface SearchFormProps {
 const SearchForm = ({
   register,
   errors,
-  usernameValue,
+  phoneValue,
   loading,
   isFound,
-  searchedUsername,
+  searchedPhone,
   onSubmit,
   onCancel,
 }: SearchFormProps) => {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="space-y-4"
-    >
+    <form onSubmit={onSubmit} className="space-y-4">
       <div className="space-y-2">
-        <Label
-          htmlFor="username"
-          className="text-sm font-semibold"
-        >
-          Tìm bằng tên đăng nhập
+        <Label htmlFor="phone" className="text-sm font-semibold">
+          Tìm bằng số điện thoại
         </Label>
 
         <Input
-          id="username"
-          placeholder="Gõ tên tên đăng nhập vào đây..."
-          className="glass border-border/50 focus:border-primary/50 transition-smooth"
-          {...register("username", {
-            required: "tên đăng nhập không được bỏ trống",
+          id="phone"
+          placeholder="Nhập số điện thoại..."
+          {...register("phone", {
+            required: "Số điện thoại không được bỏ trống",
           })}
-        ></Input>
-        {errors.username && (
-          <p className="error-message">{errors.username.message}</p>
+        />
+
+        {errors.phone && (
+          <p className="text-sm text-red-500">{errors.phone.message}</p>
         )}
 
         {isFound === false && (
-          <span className="error-message">
-            Không tìm thấy
-            <span className="font-semibold">@{searchedUsername}</span>
+          <span className="text-sm text-red-500">
+            Không tìm thấy{" "}
+            <span className="font-semibold">{searchedPhone}</span>
           </span>
         )}
       </div>
@@ -66,7 +60,7 @@ const SearchForm = ({
           <Button
             type="button"
             variant="outline"
-            className="flex-1 glass hover:text-destructive"
+            className="flex-1"
             onClick={onCancel}
           >
             Hủy
@@ -75,14 +69,15 @@ const SearchForm = ({
 
         <Button
           type="submit"
-          disabled={loading || !usernameValue?.trim()}
-          className="flex-1 bg-gradient-chat text-white hover:opacity-90 transition-smooth"
+          disabled={loading || !phoneValue?.trim()}
+          className="flex-1"
         >
           {loading ? (
-            <span>Đang tìm ...</span>
+            <span>Đang tìm...</span>
           ) : (
             <>
-              <Search className="size-4 mr-2" /> Tìm
+              <Search className="size-4 mr-2" />
+              Tìm
             </>
           )}
         </Button>

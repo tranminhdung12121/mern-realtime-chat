@@ -84,36 +84,29 @@ export const useChatStore = create<ChatState>()(
           set({ messageLoading: false });
         }
       },
-      sendDirectMessage: async (recipientId, content, imgUrl) => {
+      sendDirectMessage: async (recipientId, content, files) => {
         try {
           const { activeConversationId } = get();
+
           await chatService.sendDirectMessage(
             recipientId,
             content,
-            imgUrl,
+            files,
             activeConversationId || undefined,
           );
-          set((state) => ({
-            conversations: state.conversations.map((c) =>
-              c._id === activeConversationId ? { ...c, seenBy: [] } : c,
-            ),
-          }));
         } catch (error) {
-          console.error("Lỗi xảy ra khi gửi direct message", error);
+          console.error("sendDirectMessage error:", error);
         }
       },
-      sendGroupMessage: async (conversationId, content, imgUrl) => {
+
+      sendGroupMessage: async (conversationId, content, files) => {
         try {
-          await chatService.sendGroupMessage(conversationId, content, imgUrl);
-          set((state) => ({
-            conversations: state.conversations.map((c) =>
-              c._id === get().activeConversationId ? { ...c, seenBy: [] } : c,
-            ),
-          }));
+          await chatService.sendGroupMessage(conversationId, content, files);
         } catch (error) {
-          console.error("Lỗi xảy ra gửi group message", error);
+          console.error("sendGroupMessage error:", error);
         }
       },
+
       addMessage: async (message) => {
         try {
           const { user } = useAuthStore.getState();
@@ -230,10 +223,73 @@ export const useChatStore = create<ChatState>()(
             "Lỗi xảy ra khi gọi createConversation trong store",
             error,
           );
-        } 
-        finally {
+        } finally {
           set({ loading: false });
         }
+      },
+      deleteMessage: async (_id, conversationId) => {
+        try {
+          const { lastMessage } = await chatService.deleteMessage(_id);
+
+          set((state) => {
+            const convoMessages = state.messages[conversationId];
+
+            if (!convoMessages) return state;
+
+            const filtered = convoMessages.items.filter((m) => m._id !== _id);
+
+            return {
+              messages: {
+                ...state.messages,
+                [conversationId]: {
+                  ...convoMessages,
+                  items: filtered,
+                },
+              },
+
+              conversations: state.conversations.map((c) =>
+                c._id === conversationId
+                  ? {
+                      ...c,
+                      lastMessage,
+                      lastMessageAt: lastMessage?.createdAt ?? null,
+                    }
+                  : c,
+              ),
+            };
+          });
+        } catch (error) {
+          console.error("deleteMessage error:", error);
+        }
+      },
+      deleteMessageRealtime: (_id, conversationId, lastMessage) => {
+        set((state) => {
+          const convoMessages = state.messages[conversationId];
+
+          if (!convoMessages) return state;
+
+          const filtered = convoMessages.items.filter((m) => m._id !== _id);
+
+          return {
+            messages: {
+              ...state.messages,
+              [conversationId]: {
+                ...convoMessages,
+                items: filtered,
+              },
+            },
+
+            conversations: state.conversations.map((c) =>
+              c._id === conversationId
+                ? {
+                    ...c,
+                    lastMessage: lastMessage,
+                    lastMessageAt: lastMessage?.createdAt ?? c.lastMessageAt
+                  }
+                : c,
+            ),
+          };
+        });
       },
     }),
     {

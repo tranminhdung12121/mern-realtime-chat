@@ -1,6 +1,5 @@
 export interface User {
   _id: string;
-  username: string;
   email: string;
   displayName: string;
   avatarUrl?: string;
@@ -10,9 +9,16 @@ export interface User {
   updatedAt?: string;
 }
 
+export interface SearchUser {
+  _id: string;
+  email: string;
+  displayName: string;
+  avatarUrl?: string;
+}
+
 export interface Friend {
   _id: string;
-  username: string;
+  email: string;
   displayName: string;
   avatarUrl?: string;
 }
@@ -21,17 +27,17 @@ export interface FriendRequest {
   _id: string;
   from?: {
     _id: string;
-    username: string;
+    email: string;
     displayName: string;
     avatarUrl?: string;
   };
   to?: {
     _id: string;
-    username: string;
+    email: string;
     displayName: string;
     avatarUrl?: string;
   };
-  message: string;
+  message?: string;
   createdAt: string;
   updatedAt: string;
 }

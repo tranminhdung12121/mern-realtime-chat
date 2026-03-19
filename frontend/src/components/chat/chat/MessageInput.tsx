@@ -14,6 +14,7 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
 
   const [value, setValue] = useState("");
   const [files, setFiles] = useState<File[]>([]);
+  const isAskingAI = value.toLowerCase().includes("@ai");
 
   if (!user) return null;
 
@@ -63,7 +64,11 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
 
   return (
     <div className="p-3 bg-background border-t">
-
+      {isAskingAI && (
+        <div className="mb-2 flex items-center gap-2 text-sm text-purple-500">
+          🤖 Đang hỏi Chatify AI
+        </div>
+      )}
       {/* preview files */}
       {files.length > 0 && (
         <div className="flex gap-2 mb-2 flex-wrap">
@@ -97,7 +102,6 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
       )}
 
       <div className="flex items-center gap-2">
-
         <input
           type="file"
           multiple

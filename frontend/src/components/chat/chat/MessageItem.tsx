@@ -88,6 +88,7 @@ const MessageItem = ({
               <UserAvatar
                 type="chat"
                 name={participant?.displayName ?? "Chatify"}
+                id={participant?._id || ""}
                 avatarUrl={participant?.avatarUrl ?? undefined}
               />
             )}

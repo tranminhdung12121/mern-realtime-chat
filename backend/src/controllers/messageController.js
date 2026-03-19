@@ -7,6 +7,9 @@ import {
 
 import { io } from "../socket/index.js";
 import { uploadFileFromBuffer } from "../middlewares/uploadMiddleware.js";
+import { extractAIPrompt } from "../utils/aiHelper.js";
+import { generateAIResponse } from "../utils/aiService.js";
+import { AI_USER_ID } from "../utils/seedAIUser.js";
 
 export const sendDirectMessage = async (req, res) => {
   try {
@@ -67,6 +70,40 @@ export const sendDirectMessage = async (req, res) => {
 
     emitNewMessage(io, conversation, message);
 
+    // ===== 🤖 HANDLE AI =====
+    const aiPrompt = extractAIPrompt(content);
+
+    // ưu tiên @ai
+    if (aiPrompt) {
+      const aiReply = await generateAIResponse(aiPrompt);
+
+      const aiMessage = await Message.create({
+        conversationId: conversation._id,
+        senderId: AI_USER_ID,
+        content: aiReply,
+      });
+
+      updateConversationAfterCreateMessage(conversation, aiMessage, AI_USER_ID);
+      await conversation.save();
+
+      emitNewMessage(io, conversation, aiMessage);
+    }
+    // nếu không có @ai thì mới xử lý chat AI riêng
+    else if (recipientId === AI_USER_ID) {
+      const aiReply = await generateAIResponse(content);
+
+      const aiMessage = await Message.create({
+        conversationId: conversation._id,
+        senderId: AI_USER_ID,
+        content: aiReply,
+      });
+
+      updateConversationAfterCreateMessage(conversation, aiMessage, AI_USER_ID);
+      await conversation.save();
+
+      emitNewMessage(io, conversation, aiMessage);
+    }
+
     return res.status(201).json({ message });
   } catch (error) {
     console.error("sendDirectMessage error:", error);
@@ -115,6 +152,23 @@ export const sendGroupMessage = async (req, res) => {
     await conversation.save();
 
     emitNewMessage(io, conversation, message);
+    // 🤖 detect @ai
+    const aiPrompt = extractAIPrompt(content);
+
+    if (aiPrompt) {
+      const aiReply = await generateAIResponse(aiPrompt);
+
+      const aiMessage = await Message.create({
+        conversationId,
+        senderId: AI_USER_ID,
+        content: aiReply,
+      });
+
+      updateConversationAfterCreateMessage(conversation, aiMessage, AI_USER_ID);
+      await conversation.save();
+
+      emitNewMessage(io, conversation, aiMessage);
+    }
 
     return res.status(201).json({ message });
   } catch (error) {
@@ -148,8 +202,9 @@ export const deleteMessage = async (req, res) => {
     await Message.findByIdAndDelete(_id);
 
     // tìm last message mới
-    const lastMessage = await Message.findOne({ conversationId })
-      .sort({ createdAt: -1 });
+    const lastMessage = await Message.findOne({ conversationId }).sort({
+      createdAt: -1,
+    });
 
     if (lastMessage) {
       await Conversation.updateOne(
@@ -162,7 +217,7 @@ export const deleteMessage = async (req, res) => {
             createdAt: lastMessage.createdAt,
           },
           lastMessageAt: lastMessage.createdAt,
-        }
+        },
       );
     } else {
       await Conversation.updateOne(
@@ -170,7 +225,7 @@ export const deleteMessage = async (req, res) => {
         {
           lastMessage: null,
           lastMessageAt: null,
-        }
+        },
       );
     }
 
@@ -186,7 +241,6 @@ export const deleteMessage = async (req, res) => {
       conversationId,
       lastMessage,
     });
-
   } catch (error) {
     console.error(error);
     res.status(500).json({
@@ -194,5 +248,3 @@ export const deleteMessage = async (req, res) => {
     });
   }
 };
-
-

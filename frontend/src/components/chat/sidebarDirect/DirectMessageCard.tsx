@@ -49,13 +49,15 @@ const DirectMessageCard = ({ convo }: { convo: Conversation }) => {
           <UserAvatar
             type="sidebar"
             name={otherUser.displayName ?? ""}
+            id={otherUser._id ?? ""}
             avatarUrl={otherUser.avatarUrl ?? undefined}
           />
-          <StatusBadge
+          {otherUser._id !== '000000000000000000000001' &&<StatusBadge
             status={
               onlineUsers.includes(otherUser?._id ?? "") ? "online" : "offline"
             }
-          />
+          />}
+          
           {unreadCount > 0 && <UnreadCountBadge unreadCount={unreadCount} />}
         </>
       }

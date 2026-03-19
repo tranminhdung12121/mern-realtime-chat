@@ -1,10 +1,11 @@
 import Conversation from "../models/Conversation.js";
 import Friend from "../models/Friend.js";
+import { AI_USER_ID } from "../utils/seedAIUser.js";
 
 const pair = (a, b) => (a < b ? [a, b] : [b, a]);
 
 export const checkFriendship = async (req, res, next) => {
-    try {
+  try {
     const me = req.user._id.toString();
 
     const recipientId = req.body?.recipientId ?? null;
@@ -17,12 +18,17 @@ export const checkFriendship = async (req, res, next) => {
     }
 
     if (recipientId) {
+      if (recipientId === AI_USER_ID) {
+        return next();
+      }
       const [userA, userB] = pair(me, recipientId);
 
       const isFriend = await Friend.findOne({ userA, userB });
 
       if (!isFriend) {
-        return res.status(403).json({ message: "Bạn chưa kết bạn với người này" });
+        return res
+          .status(403)
+          .json({ message: "Bạn chưa kết bạn với người này" });
       }
 
       return next();
@@ -58,11 +64,13 @@ export const checkGroupMembership = async (req, res, next) => {
     const conversation = await Conversation.findById(conversationId);
 
     if (!conversation) {
-      return res.status(404).json({ message: "Không tìm thấy cuộc trò chuyện" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy cuộc trò chuyện" });
     }
 
     const isMember = conversation.participants.some(
-      (p) => p.userId.toString() === userId.toString()
+      (p) => p.userId.toString() === userId.toString(),
     );
 
     if (!isMember) {

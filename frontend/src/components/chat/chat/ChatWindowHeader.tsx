@@ -49,16 +49,18 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
                 <UserAvatar
                   type={"sidebar"}
                   name={otherUser?.displayName || "Chatify"}
+                  id={otherUser?._id || ""}
                   avatarUrl={otherUser?.avatarUrl || undefined}
                 />
                 {/* todo: socket io */}
-                <StatusBadge
+                {otherUser?._id !== "000000000000000000000001" && <StatusBadge
                   status={
                     onlineUsers.includes(otherUser?._id ?? "")
                       ? "online"
                       : "offline"
                   }
-                />
+                />}
+                
               </>
             ) : (
               <GroupChatAvatar

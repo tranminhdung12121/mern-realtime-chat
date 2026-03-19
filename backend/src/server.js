@@ -13,6 +13,7 @@ import swaggerUi from "swagger-ui-express";
 import fs from "fs";
 import {app, server} from"./socket/index.js";
 import { v2 as cloudinary } from "cloudinary";
+import { seedAIUser } from "./utils/seedAIUser.js";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use("/api/messages", messageRoute);
 app.use("/api/conversations", conversationRoute);
 
 connectDB().then(() => {
+  seedAIUser();
   server.listen(PORT, () => {
     console.log(`server bắt đầu trên cổng ${PORT}`);
   });

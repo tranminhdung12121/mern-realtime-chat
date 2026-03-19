@@ -6,6 +6,7 @@ import Session from "../models/Session.js";
 import OtpVerification from "../models/OtpVerification.js";
 import { sendOtpEmail } from "../utils/sendOtpEmail.js";
 import { OAuth2Client } from "google-auth-library";
+import { ConversationAi } from "../utils/aiHelper.js";
 
 const ACCESS_TOKEN_TTL = "30m";
 const REFRESH_TOKEN_TTL = 14 * 24 * 60 * 60 * 1000; // 14 ngày
@@ -115,6 +116,8 @@ export const verifySignUpOtp = async (req, res) => {
     const user = await User.create(record.userData);
 
     await OtpVerification.deleteOne({ email });
+    //tạo cuộc trò chuyện mặc định với chat box
+    await ConversationAi(user._id);
 
     return res.status(201).json({
       message: "Đăng ký thành công",
@@ -291,7 +294,8 @@ export const googleLogin = async (req, res) => {
       sameSite: "none",
       maxAge: REFRESH_TOKEN_TTL,
     });
-
+    //tạo cuộc trò chuyện mặc định với chat box
+    await ConversationAi(user._id);
     return res.json({ accessToken });
   } catch (error) {
     console.error("googleLogin error", error);

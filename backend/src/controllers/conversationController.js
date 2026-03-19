@@ -82,10 +82,10 @@ export const createConversation = async (req, res) => {
       });
     }
 
-    // if (type === "direct") {
-    //   io.to(userId).emit("new-group", formatted);
-    //   io.to(memberIds[0]).emit("new-group", formatted);
-    // }
+    if (type === "direct") {
+      io.to(userId).emit("new-group", formatted);
+      io.to(memberIds[0]).emit("new-group", formatted);
+    }
     return res.status(201).json({ conversation: formatted });
   } catch (error) {
     console.error("Lỗi khi tạo conversation", error);
@@ -217,30 +217,30 @@ export const markAsSeen = async (req, res) => {
     )
       .populate("seenBy", "displayName avatarUrl")
       .populate("lastMessage.senderId", "displayName avatarUrl");
-    // const mapConversationForClient = (conversation) => {
-    //   return {
-    //     ...(conversation.toObject?.() ?? conversation),
+    const mapConversationForClient = (conversation) => {
+      return {
+        ...(conversation.toObject?.() ?? conversation),
 
-    //     // convert seenBy ObjectId -> object
-    //     seenBy: (conversation.seenBy || []).map((id) => ({
-    //       _id: id.toString(),
-    //     })),
+        // convert seenBy ObjectId -> object
+        seenBy: (conversation.seenBy || []).map((id) => ({
+          _id: id.toString(),
+        })),
 
-    //     // convert lastMessage
-    //     lastMessage: conversation.lastMessage
-    //       ? {
-    //           _id: conversation.lastMessage._id,
-    //           content: conversation.lastMessage.content,
-    //           createdAt: conversation.lastMessage.createdAt,
-    //           sender: {
-    //             _id: conversation.lastMessage.senderId.toString(),
-    //           },
-    //         }
-    //       : null,
-    //   };
-    // };
+        // convert lastMessage
+        lastMessage: conversation.lastMessage
+          ? {
+              _id: conversation.lastMessage._id,
+              content: conversation.lastMessage.content,
+              createdAt: conversation.lastMessage.createdAt,
+              sender: {
+                _id: conversation.lastMessage.senderId.toString(),
+              },
+            }
+          : null,
+      };
+    };
 
-    // const safeConversation = mapConversationForClient(updated);
+    const safeConversation = mapConversationForClient(updated);
 
     io.to(conversationId).emit("read-message", {
       conversation: updated,

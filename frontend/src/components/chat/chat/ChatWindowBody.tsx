@@ -4,6 +4,8 @@ import MessageItem from "./MessageItem";
 import { useLayoutEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { useCallStore } from "@/stores/useCallStore";
+import CallModal from "./CallModal";
 
 const ChatWindowBody = () => {
   const {
@@ -12,7 +14,8 @@ const ChatWindowBody = () => {
     messages: allMessages,
     fetchMessages,
   } = useChatStore();
-  const {user} = useAuthStore();
+  const { user } = useAuthStore();
+  const { targetUserId } = useCallStore();
 
   const messages = allMessages[activeConversationId!]?.items ?? [];
   const reversedMessages = [...messages].reverse();
@@ -32,7 +35,6 @@ const ChatWindowBody = () => {
     seenBy.some((u) => u._id !== currentUserId);
 
   const lastMessageStatus: "đã gửi" | "đã xem" = isSeen ? "đã xem" : "đã gửi";
-
 
   const key = `chat-scroll-${activeConversationId}`;
   // ref
@@ -69,7 +71,7 @@ const ChatWindowBody = () => {
       JSON.stringify({
         scrollTop: container.scrollTop,
         scrollHeight: container.scrollHeight,
-      })
+      }),
     );
   };
 
@@ -81,7 +83,8 @@ const ChatWindowBody = () => {
 
     if (item) {
       const { scrollTop } = JSON.parse(item);
-      requestAnimationFrame(() => {// cuộn sau khi trình duyệt đã chayj xong layout 
+      requestAnimationFrame(() => {
+        // cuộn sau khi trình duyệt đã chayj xong layout
         container.scrollTop = scrollTop;
       });
     }
@@ -90,50 +93,52 @@ const ChatWindowBody = () => {
   if (!selectedConvo) {
     return <ChatWelcomeScreen />;
   }
-
-  if (!messages?.length) {
-    return (
-      <div className="flex h-full items-center justify-center text-muted-foreground ">
-        Chưa có tin nhắn nào trong cuộc trò chuyện này.
-      </div>
-    );
-  }
+console.log("reversedMessages",reversedMessages)
   return (
-    <div className="p-4 bg-primary-foreground h-full flex flex-col overflow-hidden">
+    <div className="p-3 bg-primary-foreground h-full flex flex-col overflow-hidden">
       <div
         id="scrollableDiv"
         ref={containerRef}
         onScroll={handleScrollSave}
         className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
       >
-        {" "}
+        {/* Always mount `Call` so recipient can listen for `incoming-call` events */}
+        <CallModal userId={targetUserId ?? undefined } displayName={user?.displayName ?? "ẩn danh"}/>
         <div ref={messagesEndRef}></div>
-        {/*flex-col-reverse*/}
-        <InfiniteScroll
-          dataLength={messages.length}
-          next={fetchMoreMessages}
-          hasMore={hasMore}
-          scrollableTarget="scrollableDiv"
-          loader={<p>Đang tải...</p>}
-          inverse={true}
-          style={{
-            display: "flex",
-            flexDirection: "column-reverse",
-            overflow: "visible",
-          }}
-        >
-          {reversedMessages.map((message, index) => (
-            <MessageItem
-              key={message._id ?? index}
-              message={message}
-              index={index}
-              messages={reversedMessages}
-              selectedConvo={selectedConvo}
-              lastMessageStatus={lastMessageStatus}
-            />
-          ))}
-        </InfiniteScroll>
-        
+        {(!messages || messages.length === 0) && (
+          <div className="flex h-full items-center justify-center text-muted-foreground">
+            Chưa có tin nhắn nào trong cuộc trò chuyện này.
+          </div>
+        )}
+        {messages?.length ? (
+          <>
+            {/*flex-col-reverse*/}
+            <InfiniteScroll
+              dataLength={messages.length}
+              next={fetchMoreMessages}
+              hasMore={hasMore}
+              scrollableTarget="scrollableDiv"
+              loader={<p>Đang tải...</p>}
+              inverse={true}
+              style={{
+                display: "flex",
+                flexDirection: "column-reverse",
+                overflow: "visible",
+              }}
+            >
+              {reversedMessages.map((message, index) => (
+                <MessageItem
+                  key={message._id ?? index}
+                  message={message}
+                  index={index}
+                  messages={reversedMessages}
+                  selectedConvo={selectedConvo}
+                  lastMessageStatus={lastMessageStatus}
+                />
+              ))}
+            </InfiniteScroll>
+          </>
+        ) : null}
       </div>
     </div>
   );

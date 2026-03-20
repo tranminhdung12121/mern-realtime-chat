@@ -3,6 +3,7 @@ import http from "http";
 import express from "express";
 import { socketAuthMiddleware } from "../middlewares/socketMiddleware.js";
 import { getUserConversationsForSocketIO } from "../controllers/conversationController.js";
+import { initCallSocket } from "./callSocket.js";
 
 const app = express();
 
@@ -17,30 +18,32 @@ const io = new Server(server, {
 
 io.use(socketAuthMiddleware);
 
-const onlineUsers = new Map(); // {userId: socketId} //redis ứng dụng lớn=> dùng redis thay Map
+const onlineUsers = new Map(); // {userId(string): socketId} // redis: dùng redis thay Map khi scale
 
 io.on("connection", async (socket) => {
   const user = socket.user;
 
   console.log(`${user.displayName} online với socket ${socket.id}`);
 
-    onlineUsers.set(user._id, socket.id);
+  onlineUsers.set(user._id.toString(), socket.id);
+  //call
+  initCallSocket(io, socket, onlineUsers);
 
-    io.emit("online-users", Array.from(onlineUsers.keys()));
+  io.emit("online-users", Array.from(onlineUsers.keys()));
 
-    const conversationIds = await getUserConversationsForSocketIO(user._id);
-    conversationIds.forEach((id) => {
-      socket.join(id);
-    });
+  const conversationIds = await getUserConversationsForSocketIO(user._id);
+  conversationIds.forEach((id) => {
+    socket.join(id);
+  });
 
-    socket.on("join-conversation", (conversationId) => {
-      socket.join(conversationId);
-    });
+  socket.on("join-conversation", (conversationId) => {
+    socket.join(conversationId);
+  });
 
-    socket.join(user._id.toString());
+  socket.join(user._id.toString());
 
   socket.on("disconnect", () => {
-    onlineUsers.delete(user._id);
+    onlineUsers.delete(user._id.toString());
     io.emit("online-users", Array.from(onlineUsers.keys()));
     console.log(`socket disconnected: ${socket.id}`);
   });

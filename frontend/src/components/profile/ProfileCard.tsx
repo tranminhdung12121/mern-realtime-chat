@@ -18,7 +18,7 @@ const ProfileCard = ({ user }: ProfileCardProps) => {
     user.bio = "Will code for food 💻";
   }
 
-  const isOnline = onlineUsers.includes(user._id) ? true : false;
+  const isOnline = onlineUsers.includes(String(user._id)) ? true : false;
 
   return (
     <Card className="overflow-hidden p-0 h-52 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">

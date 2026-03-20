@@ -7,13 +7,16 @@ import UserAvatar from "../UserAvatar";
 import StatusBadge from "../StatusBadge";
 import GroupChatAvatar from "../sidebarGroup/GroupChatAvatar";
 import { useSocketStore } from "@/stores/useSocketStore";
+import { Phone, Video } from "lucide-react";
+import { useCallStore } from "@/stores/useCallStore";
 
 const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
   const { conversations, activeConversationId } = useChatStore();
   const { user } = useAuthStore();
   const { onlineUsers } = useSocketStore();
+  const { startCall } = useCallStore();
 
-  let otherUser;
+  let otherUser: any = null;
 
   chat = chat ?? conversations.find((c) => c._id === activeConversationId);
 
@@ -33,7 +36,7 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
   }
 
   return (
-    <header className="sticky top-0 z-10 px-4 py-2 flex items-center bg-background">
+    <header className="sticky top-0 z-10 px-4 py-2 flex items-center shadow-md">
       <div className="flex items-center gap-2 w-full">
         <SidebarTrigger className="-ml-1 text-foreground" />
         <Separator
@@ -53,14 +56,15 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
                   avatarUrl={otherUser?.avatarUrl || undefined}
                 />
                 {/* todo: socket io */}
-                {otherUser?._id !== "000000000000000000000001" && <StatusBadge
-                  status={
-                    onlineUsers.includes(otherUser?._id ?? "")
-                      ? "online"
-                      : "offline"
-                  }
-                />}
-                
+                {otherUser?._id !== "000000000000000000000001" && (
+                  <StatusBadge
+                    status={
+                      onlineUsers.includes(String(otherUser?._id ?? ""))
+                        ? "online"
+                        : "offline"
+                    }
+                  />
+                )}
               </>
             ) : (
               <GroupChatAvatar
@@ -74,6 +78,39 @@ const ChatWindowHeader = ({ chat }: { chat?: Conversation }) => {
           <h2 className="font-semibold text-foreground">
             {chat.type === "direct" ? otherUser?.displayName : chat.group?.name}
           </h2>
+          {chat.type === "direct" && (
+            <div className="ml-auto flex items-center gap-2">
+              <button
+                disabled={!onlineUsers.includes(String(otherUser?._id ?? ""))}
+                onClick={() => {
+                  if (otherUser?._id) {
+                    startCall(
+                      String(otherUser._id?.toString?.() ?? otherUser._id),
+                      "audio",
+                    );
+                  }
+                }}
+                className="p-2 rounded-full hover:bg-muted transition disabled:opacity-50"
+              >
+                <Phone className="w-5 h-5 text-foreground" />
+              </button>
+
+              <button
+                disabled={!onlineUsers.includes(String(otherUser?._id ?? ""))}
+                onClick={() => {
+                  if (otherUser?._id) {
+                    startCall(
+                      String(otherUser._id?.toString?.() ?? otherUser._id),
+                      "video",
+                    );
+                  }
+                }}
+                className="p-2 rounded-full hover:bg-muted transition disabled:opacity-50"
+              >
+                <Video className="w-5 h-5 text-foreground" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

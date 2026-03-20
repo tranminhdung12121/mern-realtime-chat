@@ -107,3 +107,13 @@ export interface UserState {
     bio: string,
   ) => Promise<void>;
 }
+
+export interface CallState {
+  isOpen: boolean;
+  targetUserId: string | null;
+  callType: "video" | "audio";
+
+  startCall: (userId: string, callType: "video" | "audio") => void;
+  endCallUI: () => void;
+  setIsOpen: (open: boolean) => void;
+}

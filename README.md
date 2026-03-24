@@ -235,7 +235,7 @@ Client ⇄ Socket.IO Server ⇄ Connected Clients
 
 ## 🌐 Live Demo
 
-👉 Coming soon...
+👉 https://mern-realtime-chat-frontend.vercel.app/
 
 ---
 

@@ -11,6 +11,7 @@ import { useSocketStore } from "./stores/useSocketStore";
 import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import VerifyOtpPage from "./pages/VerifyOtpPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function App() {
     const { isDark, setTheme } = useThemeStore();
@@ -41,6 +42,7 @@ function App() {
           <Route path="/terms" element={<TermsOfServicePage />} />
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/verify-otp" element={<VerifyOtpPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           {/* protected routes*/}
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ChatAppPage />} />

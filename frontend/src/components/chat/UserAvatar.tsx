@@ -11,7 +11,6 @@ interface IUserAvatarProps {
 
 const UserAvatar = ({ type, name, id, avatarUrl, className }: IUserAvatarProps) => {
   const isAI = id === "000000000000000000000001"; // 🔥 xác định AI
-console.log("id",id)
   const bgColor = isAI
     ? "bg-gradient-to-r from-purple-500 to-pink-500" // AI đẹp hơn
     : !avatarUrl

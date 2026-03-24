@@ -69,4 +69,64 @@ export const authService = {
     const res = await api.post("/auth/refresh", { withCredentials: true });
     return res.data.accessToken;
   },
+
+  forgotPasswordRequestOtp: async (email: string) => {
+    const res = await api.post("/auth/forgot-password/request-otp", { email });
+    return res.data;
+  },
+
+  verifyForgotPasswordOtp: async (email: string, otp: string) => {
+    const res = await api.post("/auth/forgot-password/verify-otp", {
+      email,
+      otp,
+    });
+    return res.data; // có resetToken
+  },
+
+  resetPassword: async (password: string, resetToken: string) => {
+    const res = await api.patch(
+      "/auth/forgot-password/reset",
+      { password },
+      {
+        headers: {
+          Authorization: `Bearer ${resetToken}`,
+        },
+      },
+    );
+    return res.data;
+  },
+
+  updatePassword: async (
+    currentPassword: string,
+    password: string,
+    confirmPassword: string,
+  ) => {
+    const res = await api.patch(
+      "/users/updatePassword",
+      {
+        currentPassword,
+        password,
+        confirmPassword,
+      },
+      { withCredentials: true },
+    );
+    return res;
+  },
+  updateEmail: async (email: string, currentPassword: string) => {
+    const res = await api.patch(
+      "/users/updateEmail",
+      { email, currentPassword },
+      { withCredentials: true },
+    );
+    return res.data;
+  },
+
+  verifyUpdateEmailOtp: async (email: string, otp: string) => {
+    const res = await api.patch(
+      "/users/updateEmailOtp",
+      { email, otp },
+      { withCredentials: true },
+    );
+    return res.data;
+  },
 };

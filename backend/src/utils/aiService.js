@@ -35,7 +35,6 @@ export const generateAIResponse = async (prompt) => {
   );
 
   const data = await res.json();
-  console.log("kq ai", data);
 
   return data.candidates?.[0]?.content?.parts?.[0]?.text || "Không tìm thấy kết quả!";
 };

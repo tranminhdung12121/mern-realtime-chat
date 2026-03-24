@@ -9,7 +9,11 @@ interface RequestItemProps {
   type: "sent" | "received";
 }
 
-const FriendRequestItem = ({ requestInfo, actions, type }: RequestItemProps) => {
+const FriendRequestItem = ({
+  requestInfo,
+  actions,
+  type,
+}: RequestItemProps) => {
   const [showMessage, setShowMessage] = useState(false);
 
   if (!requestInfo) return null;
@@ -22,39 +26,26 @@ const FriendRequestItem = ({ requestInfo, actions, type }: RequestItemProps) => 
       className="p-4 rounded-xl border bg-background hover:bg-muted/40 transition cursor-pointer"
       onClick={() => setShowMessage((prev) => !prev)}
     >
-
       {/* top */}
       <div className="flex items-center justify-between">
-
         <div className="flex items-start gap-3">
-
           <UserAvatar
             type="sidebar"
             name={info.displayName}
+            id={info._id}
             avatarUrl={info.avatarUrl}
           />
 
           <div className="flex flex-col">
+            <span className="font-medium text-sm">{info.displayName}</span>
 
-            <span className="font-medium text-sm">
-              {info.displayName}
-            </span>
-
-            <span className="text-xs text-muted-foreground">
-              {info.email}
-            </span>
-
+            <span className="text-xs text-muted-foreground">{info.email}</span>
           </div>
-
         </div>
 
-        <div
-          className="flex gap-2"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
           {actions}
         </div>
-
       </div>
 
       {/* message */}
@@ -63,7 +54,6 @@ const FriendRequestItem = ({ requestInfo, actions, type }: RequestItemProps) => 
           {requestInfo.message}
         </div>
       )}
-
     </div>
   );
 };

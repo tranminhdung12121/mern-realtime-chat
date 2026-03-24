@@ -67,7 +67,9 @@ export const acceptFriendRequest = async (req, res) => {
     const request = await FriendRequest.findById(requestId);
 
     if (!request) {
-      return res.status(404).json({ message: "Không tìm thấy lời mời kết bạn" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy lời mời kết bạn" });
     }
 
     if (request.to.toString() !== userId.toString()) {
@@ -109,18 +111,29 @@ export const declineFriendRequest = async (req, res) => {
     const request = await FriendRequest.findById(requestId);
 
     if (!request) {
-      return res.status(404).json({ message: "Không tìm thấy lời mời kết bạn" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy lời mời kết bạn." });
     }
 
-    if (request.to.toString() !== userId.toString()) {
-      return res
-        .status(403)
-        .json({ message: "Bạn không có quyền từ chối lời mời này" });
+    if (
+      request.to.toString() !== userId.toString() &&
+      request.from.toString() !== userId.toString()
+    ) {
+      return res.status(403).json({ message: "Không có quyền." });
     }
 
     await FriendRequest.findByIdAndDelete(requestId);
 
-    return res.sendStatus(204);
+    if (request.to.toString() === userId.toString()) {
+      return res.status(200).json({
+        message: "Đã từ chối yêu cầu kết bạn.",
+      });
+    } else {
+      return res.status(200).json({
+        message: "Đã hủy yêu cầu kết bạn.",
+      });
+    }
   } catch (error) {
     console.error("Lỗi khi từ chối lời kết bạn", error);
     return res.status(500).json({ message: "Lỗi hệ thống" });
@@ -150,7 +163,7 @@ export const getAllFriends = async (req, res) => {
     }
 
     const friends = friendships.map((f) =>
-      f.userA._id.toString() === userId.toString() ? f.userB : f.userA
+      f.userA._id.toString() === userId.toString() ? f.userB : f.userA,
     );
 
     return res.status(200).json({ friends });

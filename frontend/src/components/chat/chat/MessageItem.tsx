@@ -51,7 +51,6 @@ const MessageItem = ({
   const participant = selectedConvo.participants.find(
     (p: Participant) => p._id.toString() === message.senderId.toString(),
   );
-console.log("aiid",message.senderId)
   const handleRecall = () => {
   deleteMessage(message._id, message.conversationId);
 };

@@ -1,8 +1,10 @@
 import { useFriendStore } from "@/stores/useFriendStore";
 import FriendRequestItem from "./FriendRequestItem";
+import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 const SentRequests = () => {
-  const { sentList } = useFriendStore();
+  const { sentList, declineRequest, loading } = useFriendStore();
 
   if (!sentList || sentList.length === 0) {
     return (
@@ -11,7 +13,14 @@ const SentRequests = () => {
       </p>
     );
   }
-
+  const handleDecline = async (requestId: string) => {
+    try {
+      await declineRequest(requestId);
+      toast.info("Đã hủy yêu cầu kết bạn");
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <div className="space-y-3 mt-4">
       <>
@@ -21,7 +30,17 @@ const SentRequests = () => {
             requestInfo={req}
             type="sent"
             actions={
-              <p className="text-muted-foreground text-sm">Đang chờ trả lời...</p>
+              <div className="flex items-center justify-between gap-3 p-3">
+                <Button
+                  size="sm"
+                  variant="destructiveOutline"
+                  className="bg-gray-200"
+                  onClick={() => handleDecline(req._id)}
+                  disabled={loading}
+                >
+                  Hủy yêu cầu
+                </Button>
+              </div>
             }
           />
         ))}

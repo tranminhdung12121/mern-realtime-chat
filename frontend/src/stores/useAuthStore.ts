@@ -11,6 +11,11 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null,
       user: null,
       loading: false,
+      resetToken: null,
+
+      setResetToken: (token) => {
+        set({ resetToken: token });
+      },
 
       setAccessToken: (accessToken) => {
         set({ accessToken });
@@ -150,6 +155,104 @@ export const useAuthStore = create<AuthState>()(
           get().clearState();
         } finally {
           set({ loading: false });
+        }
+      },
+      forgotPasswordRequestOtp: async (email: string) => {
+        try {
+          set({ loading: true });
+
+          await authService.forgotPasswordRequestOtp(email);
+
+          toast.success("OTP đã được gửi!");
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || "Gửi OTP thất bại!");
+          throw error;
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      verifyForgotPasswordOtp: async (email: string, otp: string) => {
+        try {
+          set({ loading: true });
+
+          const res = await authService.verifyForgotPasswordOtp(email, otp);
+
+          get().setResetToken(res.resetToken);
+
+          toast.success("Xác thực OTP thành công!");
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || "OTP không hợp lệ!");
+          throw error;
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      resetPassword: async (password: string) => {
+        try {
+          set({ loading: true });
+
+          const { resetToken } = get();
+
+          if (!resetToken) throw new Error("Missing token");
+
+          await authService.resetPassword(password, resetToken);
+
+          toast.success("Đổi mật khẩu thành công!");
+
+          set({ resetToken: null });
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data?.message || "Đổi mật khẩu thất bại!",
+          );
+          throw error;
+        } finally {
+          set({ loading: false });
+        }
+      },
+
+      updatePassword: async (
+        currentPassword: string,
+        password: string,
+        confirmPassword: string,
+      ) => {
+        try {
+          // set({ loading: true });
+          await authService.updatePassword(
+            currentPassword,
+            password,
+            confirmPassword,
+          );
+          toast.success("Đổi mật khẩu thành công!");
+        } catch (error: any) {
+          toast.error(
+            error?.response?.data?.message || "Đổi mật khẩu thất bại!",
+          );
+          throw error;
+        }
+      },
+      
+      updateEmail: async (email: string, currentPassword: string) => {
+        try {
+          await authService.updateEmail(email, currentPassword);
+          toast.success("OTP đã được gửi!");
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || "Gửi OTP thất bại!");
+          throw error;
+        }
+      },
+
+      verifyUpdateEmailOtp: async (email: string, otp: string) => {
+        try {
+          await authService.verifyUpdateEmailOtp(email, otp);
+
+          toast.success("Cập nhật email thành công!");
+
+          await get().fetchMe(); // cập nhật user mới
+        } catch (error: any) {
+          toast.error(error?.response?.data?.message || "OTP không đúng!");
+          throw error;
         }
       },
     }),

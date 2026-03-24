@@ -71,8 +71,13 @@ export const useFriendStore = create<FriendState>((set, get) => ({
       await friendService.declineRequest(requestId);
 
       set((state) => ({
-        receivedList: state.receivedList.filter((r) => r._id !== requestId),
-      }));
+      receivedList: state.receivedList.filter(
+        (r) => r._id !== requestId
+      ),
+      sentList: state.sentList?.filter(
+        (r) => r._id !== requestId
+      ),
+    }));
     } catch (error) {
       console.error("Lỗi xảy ra khi declineRequest", error);
     } finally {

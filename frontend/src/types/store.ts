@@ -6,6 +6,8 @@ export interface AuthState {
   accessToken: string | null;
   user: User | null;
   loading: boolean;
+  resetToken: string | null;
+  setResetToken: (token: string) => void;
   setAccessToken: (accessToken: string) => void;
   setUser: (user: User) => void;
   clearState: () => void;
@@ -23,6 +25,13 @@ export interface AuthState {
   signOut: () => Promise<void>;
   fetchMe: () => Promise<void>;
   refresh: () => Promise<void>;
+  forgotPasswordRequestOtp: (email: string) => Promise<void>;
+  verifyForgotPasswordOtp: (email: string, otp: string) => Promise<void>;
+  resetPassword: (password: string) => Promise<void>;
+  updatePassword: (currentPassword: string, password: string, confirmPassword: string,) => Promise<void>;
+  updateEmail: (email: string, currentPassword: string) => Promise<void>;
+  verifyUpdateEmailOtp: (email: string, otp: string) => Promise<void>;
+
 }
 
 export interface ThemeState {

@@ -93,7 +93,6 @@ const ChatWindowBody = () => {
   if (!selectedConvo) {
     return <ChatWelcomeScreen />;
   }
-console.log("reversedMessages",reversedMessages)
   return (
     <div className="p-3 bg-primary-foreground h-full flex flex-col overflow-hidden">
       <div

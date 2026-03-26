@@ -134,12 +134,13 @@ export function SigninForm({
                 </div>
                 {/* ✅ GOOGLE LOGIN */}
                 <div className="w-full relative group">
-                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-100 to-orange-200 opacity-0 group-hover:opacity-100 transition-all duration-300 blur-sm"></div>
                   <div className="relative w-full [&>div]:w-full [&>div>div]:!rounded-xl [&>div>div]:!shadow-none">
                     <GoogleLogin
                       theme="outline"
                       size="large"
                       shape="pill"
+                      width="100%"
+                      auto_select={false}
                       onSuccess={async (credentialResponse) => {
                         if (!credentialResponse.credential) return;
                         await googleLogin(credentialResponse.credential);

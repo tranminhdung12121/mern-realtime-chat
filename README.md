@@ -1,7 +1,5 @@
 # 💬 MERN Realtime Chat Application
 
-![Chatify Preview](https://mern-realtime-chat-frontend.vercel.app/logoBig.png)
-
 A full-stack realtime chat application built with the **MERN Stack** featuring secure authentication and realtime messaging powered by **Socket.IO**.
 
 This project demonstrates the design and implementation of a scalable realtime communication system combining REST APIs and WebSocket architecture.

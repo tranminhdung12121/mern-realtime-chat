@@ -48,7 +48,7 @@ export function SigninForm({
                   className="mx-auto flex items-center gap-2 w-fit group"
                 >
                   <img
-                    src="/Group 1 (2).png"
+                    src="/logo.png"
                     alt="logo"
                     className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
                   />

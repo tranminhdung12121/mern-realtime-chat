@@ -132,7 +132,7 @@ export function ForgotPasswordForm({
           {/* Header */}
           <div className="flex flex-col items-center text-center gap-4 mb-6">
             <a href="/" className="flex items-center gap-2">
-              <img src="/Group 1 (2).png" alt="logo" className="h-12 w-auto" />
+              <img src="/logo.png" alt="logo" className="h-12 w-auto" />
               <span className="text-xl font-bold text-[#F97316]">Chatify</span>
             </a>
 

@@ -1,5 +1,7 @@
 # 💬 MERN Realtime Chat Application
 
+![Chatify Preview](https://mern-realtime-chat-frontend.vercel.app/logoBig.png)
+
 A full-stack realtime chat application built with the **MERN Stack** featuring secure authentication and realtime messaging powered by **Socket.IO**.
 
 This project demonstrates the design and implementation of a scalable realtime communication system combining REST APIs and WebSocket architecture.
@@ -24,17 +26,18 @@ This project demonstrates the design and implementation of a scalable realtime c
 
 ## ⭐ Technical Highlights
 
-* Designed hybrid REST + WebSocket architecture for realtime communication
+* Designed a hybrid REST + WebSocket architecture for realtime communication
 * Implemented bidirectional messaging using Socket.IO rooms
-* Built secure authentication system (JWT + HTTP-only cookies + Google OAuth 2.0)
-* Integrated AI chatbot using Google Gemini API
-* Implemented OTP-based email verification using Nodemailer
-* Developed media upload system with Multer & Cloudinary
-* Designed modular backend architecture with clear separation of concerns
+* Built a secure authentication system using JWT, HTTP-only cookies, and Google OAuth 2.0
+* Integrated an AI chatbot using Google Gemini API
+* Implemented OTP-based email verification with Nodemailer
+* Developed a media upload system using Multer and Cloudinary
+* Designed a modular backend architecture with clear separation of concerns
 * Documented APIs using Swagger UI
-* Centralized frontend state using Zustand
-* Optimized UX with infinite scrolling, animations, and emoji support
-* Persistent messaging system using MongoDB & Mongoose
+* Centralized frontend state management using Zustand
+* Optimized user experience with infinite scrolling, animations, and emoji support
+* Built a persistent messaging system using MongoDB and Mongoose
+* Implemented SEO optimization for SPA using dynamic metadata (React Helmet), Open Graph integration, and proper routing configuration to ensure search engine indexing
 
 ---
 
@@ -235,7 +238,7 @@ Client ⇄ Socket.IO Server ⇄ Connected Clients
 
 ## 🌐 Live Demo
 
-👉 https://mern-realtime-chat-frontend.vercel.app/
+🚀 https://mern-realtime-chat-frontend.vercel.app/
 
 ---
 

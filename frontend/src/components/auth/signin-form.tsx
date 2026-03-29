@@ -133,25 +133,20 @@ export function SigninForm({
                   </div>
                 </div>
                 {/* ✅ GOOGLE LOGIN */}
-                <div className="w-full relative group">
-                  <div className="relative w-full [&>div]:w-full [&>div>div]:!rounded-xl [&>div>div]:!shadow-none">
-                    <GoogleLogin
-                      theme="outline"
-                      size="large"
-                      shape="pill"
-                      width="100%"
-                      auto_select={false}
-                      onSuccess={async (credentialResponse) => {
-                        if (!credentialResponse.credential) return;
-                        await googleLogin(credentialResponse.credential);
-                        navigate("/");
-                      }}
-                      onError={() => {
-                        console.log("Google Login Failed");
-                      }}
-                    />
-                  </div>
-                </div>
+                <div className="w-full google-btn-fullwidth">
+  <GoogleLogin
+    theme="outline"
+    size="large"
+    shape="pill"
+    width="100%"
+    onSuccess={async (credentialResponse) => {
+      if (!credentialResponse.credential) return;
+      await googleLogin(credentialResponse.credential);
+      navigate("/");
+    }}
+    onError={() => console.log("Google Login Failed")}
+  />
+</div>
               </div>
 
               <div className="text-center text-sm">

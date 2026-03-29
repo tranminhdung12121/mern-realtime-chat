@@ -210,27 +210,27 @@ Client ⇄ Socket.IO Server ⇄ Connected Clients
 
 ### 🔐 Login
 
-<img src="./screenshots/signin.png" width="500"/>
+<img src="./screenshots/signin.png" width="1200"/>
 
 ### 📝 Sign Up
 
-<img src="./screenshots/signup.png" width="500"/>
+<img src="./screenshots/signup.png" width="1200"/>
 
 ### 💬 Realtime Chat
 
-<img src="./screenshots/chat.png" width="500"/>
+<img src="./screenshots/chat.png" width="1200"/>
 
 ### 👤 Profile
 
-<img src="./screenshots/profile.png" width="500"/>
+<img src="./screenshots/profile.png" width="1200"/>
 
 ### 🌙 Dark Mode
 
-<img src="./screenshots/dark.png" width="500"/>
+<img src="./screenshots/dark.png" width="1200"/>
 
 ### ☀️ Light Mode
 
-<img src="./screenshots/light.png" width="500"/>
+<img src="./screenshots/light.png" width="1200"/>
 
 ---
 

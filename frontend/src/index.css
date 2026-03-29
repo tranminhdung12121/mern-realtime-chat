@@ -382,3 +382,10 @@
     @apply bg-background text-foreground;
   }
 }
+/* Fix Google Login button full width */
+.google-btn-fullwidth > div,
+.google-btn-fullwidth iframe,
+.google-btn-fullwidth div[role="button"] {
+  width: 100% !important;
+  min-width: 100% !important;
+}

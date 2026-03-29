@@ -192,7 +192,7 @@ export function ForgotPasswordForm({
                   )}
                 </div>
 
-                <Button disabled={loading} className="w-full">
+                <Button disabled={loading} className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 h-[38px] text-base rounded-full">
                   {loading ? "Đang gửi..." : "Gửi OTP"}
                 </Button>
               </motion.form>
@@ -242,7 +242,7 @@ export function ForgotPasswordForm({
 
                 <Button
                   disabled={loading || otpForm.watch("otp")?.length !== 6}
-                  className="w-full"
+                  className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 h-[38px] text-base rounded-full"
                 >
                   {loading ? "Đang xác thực..." : "Xác nhận OTP"}
                 </Button>
@@ -279,7 +279,7 @@ export function ForgotPasswordForm({
                   </p>
                 )}
 
-                <Button disabled={loading} className="w-full">
+                <Button disabled={loading} className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 h-[38px] text-base rounded-full">
                   {loading ? "Đang đổi..." : "Đổi mật khẩu"}
                 </Button>
               </motion.form>

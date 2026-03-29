@@ -184,7 +184,7 @@ export function SignupForm({
               {/* nút đăng ký */}
               <Button
                 type="submit"
-                className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                className="w-full bg-[#F97316] hover:bg-[#FB923C] text-white font-medium py-2 px-4 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 h-[38px] text-base rounded-full"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Đang tạo tài khoản..." : "Tạo tài khoản"}

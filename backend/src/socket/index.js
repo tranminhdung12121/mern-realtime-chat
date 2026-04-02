@@ -40,6 +40,14 @@ io.on("connection", async (socket) => {
     socket.join(conversationId);
   });
 
+  socket.on("typing", (conversationId) => {
+    socket.to(conversationId).emit("typing", conversationId);
+  });
+
+  socket.on("stopTyping", (conversationId) => {
+    socket.to(conversationId).emit("stopTyping", conversationId);
+  });
+
   socket.join(user._id.toString());
 
   socket.on("disconnect", () => {

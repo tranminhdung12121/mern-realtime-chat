@@ -55,8 +55,8 @@ export function SignupForm({
                   className="mx-auto flex items-center gap-2 w-fit group"
                 >
                   <img
-                    src="/logo.png"
-                    alt="logo"
+                    src="/logoChatify.png"
+                    alt="logoChatify"
                     className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
                   />
                   <span className="text-xl font-bold text-[#F97316]">

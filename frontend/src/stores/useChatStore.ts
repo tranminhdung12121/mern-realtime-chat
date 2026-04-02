@@ -284,13 +284,22 @@ export const useChatStore = create<ChatState>()(
                 ? {
                     ...c,
                     lastMessage: lastMessage,
-                    lastMessageAt: lastMessage?.createdAt ?? c.lastMessageAt
+                    lastMessageAt: lastMessage?.createdAt ?? c.lastMessageAt,
                   }
                 : c,
             ),
           };
         });
       },
+      
+      typingUsers: {} as Record<string, boolean>,
+      setTyping: (conversationId: string, value: boolean) =>
+        set((state) => ({
+          typingUsers: {
+            ...state.typingUsers,
+            [conversationId]: value,
+          },
+        })),
     }),
     {
       name: "chat-storage",

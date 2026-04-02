@@ -25,6 +25,9 @@ const ChatWindowBody = () => {
   );
   // trạng thái tin nhắn
   const currentUserId = user?._id;
+  const typingUsers = useChatStore((state) => state.typingUsers);
+  // backend dùng socket.to() nên người gửi không nhận lại event của mình
+  const isTyping = activeConversationId && !!typingUsers[activeConversationId];
 
   const seenBy = selectedConvo?.seenBy ?? [];
   const lastSenderId = selectedConvo?.lastMessage?.sender?._id;
@@ -99,10 +102,13 @@ const ChatWindowBody = () => {
         id="scrollableDiv"
         ref={containerRef}
         onScroll={handleScrollSave}
-        className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar"
+        className="flex flex-col-reverse overflow-y-auto overflow-x-hidden beautiful-scrollbar flex-1"
       >
         {/* Always mount `Call` so recipient can listen for `incoming-call` events */}
-        <CallModal userId={targetUserId ?? undefined } displayName={user?.displayName ?? "ẩn danh"}/>
+        <CallModal
+          userId={targetUserId ?? undefined}
+          displayName={user?.displayName ?? "ẩn danh"}
+        />
         <div ref={messagesEndRef}></div>
         {(!messages || messages.length === 0) && (
           <div className="flex h-full items-center justify-center text-muted-foreground">
@@ -110,35 +116,41 @@ const ChatWindowBody = () => {
           </div>
         )}
         {messages?.length ? (
-          <>
-            {/*flex-col-reverse*/}
-            <InfiniteScroll
-              dataLength={messages.length}
-              next={fetchMoreMessages}
-              hasMore={hasMore}
-              scrollableTarget="scrollableDiv"
-              loader={<p>Đang tải...</p>}
-              inverse={true}
-              style={{
-                display: "flex",
-                flexDirection: "column-reverse",
-                overflow: "visible",
-              }}
-            >
-              {reversedMessages.map((message, index) => (
-                <MessageItem
-                  key={message._id ?? index}
-                  message={message}
-                  index={index}
-                  messages={reversedMessages}
-                  selectedConvo={selectedConvo}
-                  lastMessageStatus={lastMessageStatus}
-                />
-              ))}
-            </InfiniteScroll>
-          </>
+          <InfiniteScroll
+            dataLength={messages.length}
+            next={fetchMoreMessages}
+            hasMore={hasMore}
+            scrollableTarget="scrollableDiv"
+            loader={<p>Đang tải...</p>}
+            inverse={true}
+            style={{
+              display: "flex",
+              flexDirection: "column-reverse",
+              overflow: "visible",
+            }}
+          >
+            {reversedMessages.map((message, index) => (
+              <MessageItem
+                key={message._id ?? index}
+                message={message}
+                index={index}
+                messages={reversedMessages}
+                selectedConvo={selectedConvo}
+                lastMessageStatus={lastMessageStatus}
+              />
+            ))}
+          </InfiniteScroll>
         ) : null}
       </div>
+
+      {/* ✅ typing indicator — nằm ngoài flex-col-reverse để hiển thị đúng ở dưới cùng */}
+      {isTyping && (
+        <div className="flex items-center justify-center gap-1 px-2 py-1 bg-gray-200 rounded-full w-fit shadow-sm">
+  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.15s]"></span>
+  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.3s]"></span>
+</div>
+      )}
     </div>
   );
 };

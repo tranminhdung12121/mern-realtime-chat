@@ -86,6 +86,8 @@ export interface ChatState {
     conversationId: string,
     lastMessage: LastMessage | null,
   ) => void;
+  typingUsers: Record<string, boolean>;
+  setTyping: (conversationId: string, value: boolean) => void;
 }
 
 export interface SocketState {

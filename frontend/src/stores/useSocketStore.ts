@@ -5,6 +5,8 @@ import type { SocketState } from "@/types/store";
 import { useChatStore } from "./useChatStore";
 
 const baseURL = import.meta.env.VITE_SOCKET_URL;
+const notificationSound = new Audio("../../public/sounds/pixapay.mp3");
+notificationSound.volume = 0.5;
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
@@ -25,7 +27,13 @@ export const useSocketStore = create<SocketState>((set, get) => ({
     socket.on("connect", () => {
       console.log("Đã kết nối với socket");
     });
+    socket.on("typing", (conversationId) => {
+      useChatStore.getState().setTyping(conversationId, true);
+    });
 
+    socket.on("stopTyping", (conversationId) => {
+      useChatStore.getState().setTyping(conversationId, false);
+    });
     // online users
     socket.on("online-users", (userIds) => {
       set({ onlineUsers: userIds });
@@ -33,6 +41,36 @@ export const useSocketStore = create<SocketState>((set, get) => ({
 
     // new message
     socket.on("new-message", ({ message, conversation, unreadCounts }) => {
+      //âm thanh
+      const { user } = useAuthStore.getState();
+      const { activeConversationId } = useChatStore.getState();
+
+      const isFromMe = message.senderId === user?._id;
+      const isCurrentChat = message.conversationId === activeConversationId;
+
+      // 🔔 + 🔊 notification logic
+      if (!isFromMe && !isCurrentChat) {
+        // 🔊 sound (luôn có)
+        notificationSound.currentTime = 0;
+        notificationSound.play().catch(() => {});
+
+        // 🔔 browser notification (chỉ khi tab ẩn)
+        if (document.hidden && Notification.permission === "granted") {
+          const noti = new Notification("Tin nhắn mới", {
+            body: message.content || "Bạn có tin nhắn mới",
+            icon: "../../public/logoChatify.png",
+          });
+
+          // 👉 click vào mở đúng chat
+          noti.onclick = () => {
+            window.focus();
+            useChatStore
+              .getState()
+              .setActiveConversation(message.conversationId);
+          };
+        }
+      }
+      ////////
       useChatStore.getState().addMessage(message);
 
       const lastMessage = {

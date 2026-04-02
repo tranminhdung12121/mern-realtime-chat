@@ -7,14 +7,17 @@ import { Input } from "../../ui/input";
 import { toast } from "sonner";
 import EmojiPicker from "./EmojiPicker";
 import { useChatStore } from "@/stores/useChatStore";
+import { useTyping } from "@/hooks/useTyping";
+import { useSocketStore } from "@/stores/useSocketStore";
 
 const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
   const { user } = useAuthStore();
   const { sendDirectMessage, sendGroupMessage } = useChatStore();
-
   const [value, setValue] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const isAskingAI = value.toLowerCase().includes("@ai");
+  const { handleTyping } = useTyping(selectedConvo._id);
+  const socket = useSocketStore((s) => s.socket);
 
   if (!user) return null;
 
@@ -31,7 +34,7 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
 
   const sendMessage = async () => {
     if (!value.trim() && files.length === 0) return;
-
+    socket?.emit("stopTyping", selectedConvo._id);
     const currValue = value;
     const currFiles = files;
 
@@ -122,7 +125,7 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
         <div className="flex-1 relative">
           <Input
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {setValue(e.target.value);handleTyping()}}
             onKeyDown={handleKeyPress}
             placeholder="Soạn tin nhắn..."
             className="pr-16"

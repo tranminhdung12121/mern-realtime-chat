@@ -30,6 +30,13 @@ function App() {
     return () => disconnectSocket();
   }, [accessToken]);
 
+  useEffect(() => {
+  if ("Notification" in window && Notification.permission !== "granted") {
+    Notification.requestPermission();
+  }
+}, []);
+
+
 
   return (
     <>

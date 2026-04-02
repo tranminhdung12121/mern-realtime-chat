@@ -7,17 +7,16 @@ const ChatWelcomeScreen = () => {
       <ChatWindowHeader />
 
       <div className="flex flex-1 items-center justify-center">
-        <div className="text-center max-w-md px-6 py-10 rounded-3xl bg-white dark:bg-zinc-900 shadow-lg border border-[#f55718]/20">
+        <div className="text-center max-w-md px-3 py-5 rounded-3xl bg-white dark:bg-zinc-900 shadow-lg border border-[#f55718]/20">
           {/* Logo */}
-          <div className="relative mx-auto mb-6 w-fit pulse-ring">
+          <div className="relative mx-auto mb-4 w-fit h-fit">
             {/* Glow animation */}
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f55718] to-[#ff7a45] rounded-full blur-2xl opacity-40 animate-pulse"></div>
-
+            <div className="absolute inset-0 bg-gradient-to-r rounded-full blur-2xl opacity-40 animate-pulse pulse-ring"></div>
             {/* Logo */}
             <img
-              src="/Group 1 (3).png"
+              src="/logoLayout.png"
               alt="Chatify Logo"
-              className="relative size-24 object-contain drop-shadow-xl"
+              className="relative max-w-[270px] h-auto object-contain drop-shadow-xl"
             />
           </div>
 

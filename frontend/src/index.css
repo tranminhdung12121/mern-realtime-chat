@@ -321,7 +321,7 @@
 
   .pulse-ring::before {
     content: "";
-    @apply absolute inset-0 rounded-full bg-primary/30 animate-ping duration-[2000ms];
+    @apply absolute inset-0 rounded-full bg-[#f55718]/70 animate-ping duration-[2000ms];
   }
 
   /* Message bounce in animation */

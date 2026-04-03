@@ -66,7 +66,7 @@ const MessageInput = ({ selectedConvo }: { selectedConvo: Conversation }) => {
   };
 
   return (
-    <div className="p-3 bg-background border-t">
+    <div className="p-3 border-t">
       {isAskingAI && (
         <div className="mb-2 flex items-center gap-2 text-sm text-purple-500">
           🤖 Đang hỏi Chatify AI

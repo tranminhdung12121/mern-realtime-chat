@@ -146,10 +146,10 @@ const ChatWindowBody = () => {
       {/* ✅ typing indicator — nằm ngoài flex-col-reverse để hiển thị đúng ở dưới cùng */}
       {isTyping && (
         <div className="flex items-center justify-center gap-1 px-2 py-1 bg-gray-200 rounded-full w-fit shadow-sm">
-  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
-  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.15s]"></span>
-  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.3s]"></span>
-</div>
+          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></span>
+          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.15s]"></span>
+          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.3s]"></span>
+        </div>
       )}
     </div>
   );

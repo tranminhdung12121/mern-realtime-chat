@@ -12,9 +12,10 @@ import TermsOfServicePage from "./pages/TermsOfServicePage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import VerifyOtpPage from "./pages/VerifyOtpPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import { notificationSound } from "./utils/notificationSound";
 
 function App() {
-    const { isDark, setTheme } = useThemeStore();
+  const { isDark, setTheme } = useThemeStore();
   const { accessToken } = useAuthStore();
   const { connectSocket, disconnectSocket } = useSocketStore();
 
@@ -31,12 +32,21 @@ function App() {
   }, [accessToken]);
 
   useEffect(() => {
-  if ("Notification" in window && Notification.permission !== "granted") {
-    Notification.requestPermission();
-  }
-}, []);
+    if ("Notification" in window && Notification.permission !== "granted") {
+      Notification.requestPermission();
+    }
+  }, []);
+  useEffect(() => {
+    const unlockAudio = () => {
+      notificationSound.play().catch(() => {});
+      notificationSound.pause();
+      notificationSound.currentTime = 0;
+    };
 
+    window.addEventListener("click", unlockAudio, { once: true });
 
+    return () => window.removeEventListener("click", unlockAudio);
+  }, []);
 
   return (
     <>

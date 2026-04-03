@@ -3,10 +3,9 @@ import { io, type Socket } from "socket.io-client";
 import { useAuthStore } from "./useAuthStore";
 import type { SocketState } from "@/types/store";
 import { useChatStore } from "./useChatStore";
+import { notificationSound } from "@/utils/notificationSound";
 
 const baseURL = import.meta.env.VITE_SOCKET_URL;
-const notificationSound = new Audio("../../public/sounds/pixapay.mp3");
-notificationSound.volume = 0.5;
 
 export const useSocketStore = create<SocketState>((set, get) => ({
   socket: null,
@@ -49,26 +48,23 @@ export const useSocketStore = create<SocketState>((set, get) => ({
       const isCurrentChat = message.conversationId === activeConversationId;
 
       // 🔔 + 🔊 notification logic
-      if (!isFromMe && !isCurrentChat) {
+      if (document.hidden && Notification.permission === "granted") {
+        const noti = new Notification("Tin nhắn mới", {
+          body: message.content || "Bạn có tin nhắn mới",
+          icon: "../../public/logoChatify.png",
+        });
+
+        // 👉 click vào mở đúng chat
+        noti.onclick = () => {
+          window.focus();
+          useChatStore.getState().setActiveConversation(message.conversationId);
+        };
+      } else if (!isFromMe && !isCurrentChat) {
         // 🔊 sound (luôn có)
         notificationSound.currentTime = 0;
         notificationSound.play().catch(() => {});
 
         // 🔔 browser notification (chỉ khi tab ẩn)
-        if (document.hidden && Notification.permission === "granted") {
-          const noti = new Notification("Tin nhắn mới", {
-            body: message.content || "Bạn có tin nhắn mới",
-            icon: "../../public/logoChatify.png",
-          });
-
-          // 👉 click vào mở đúng chat
-          noti.onclick = () => {
-            window.focus();
-            useChatStore
-              .getState()
-              .setActiveConversation(message.conversationId);
-          };
-        }
       }
       ////////
       useChatStore.getState().addMessage(message);

@@ -42,17 +42,19 @@ const ChatWindowLayout = () => {
     return <ChatWindowSkeleton />;
   }
   return (
-    <SidebarInset className="flex flex-col h-full flex-1 overflow-hidden rounded-sm shadow-md">
+    <SidebarInset className="flex flex-col h-[98dvh] overflow-hidden">
       {/* Header */}
       <ChatWindowHeader chat={selectedConvo} />
 
       {/* Body */}
-      <div className="flex-1 overflow-y-auto bg-primary-foreground">
+      <div className="flex-1 overflow-y-auto">
         <ChatWindowBody />
       </div>
 
-      {/* Footer */}
-      <MessageInput selectedConvo={selectedConvo} />
+      {/* Footer FIX */}
+      <div className="sticky bottom-0 z-50 bg-background">
+        <MessageInput selectedConvo={selectedConvo} />
+      </div>
     </SidebarInset>
   );
 };
